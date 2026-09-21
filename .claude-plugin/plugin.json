@@ -1,0 +1,9 @@
+{
+  "name": "explain-repo",
+  "description": "Generate a living, browsable architecture — two interactive HTML documents (how the product works, how the code works) for the current repository.",
+  "version": "1.0.0",
+  "author": {
+    "name": "matt"
+  },
+  "skills": ["./.claude/skills/explain-repo"]
+}

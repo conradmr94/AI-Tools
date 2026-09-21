@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ai-tools",
+  "description": "Matt's personal Claude Code skills and tools",
+  "owner": {
+    "name": "matt"
+  },
+  "plugins": [
+    {
+      "name": "explain-repo",
+      "description": "Generate a living, browsable architecture — two interactive HTML documents (how the product works, how the code works) for the current repository.",
+      "source": "./",
+      "version": "1.0.0"
+    }
+  ]
+}
