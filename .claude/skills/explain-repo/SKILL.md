@@ -31,6 +31,34 @@ If the repo already has one narrower architecture doc, treat it as prior art
 to absorb (see "Cross-link, don't triplicate" below) — don't leave a stale
 copy sitting next to the new one.
 
+### If `docs/product/`, `docs/architecture/`, or `docs/viewer/` already exist
+
+This means the skill has run here before. **Update them in place — never
+regenerate from scratch, and never bail out because they already exist.**
+
+- Read the existing `data/*.js` files first, before touching anything. They
+  are the previous run's understanding of the repo; treat them as a draft
+  to reconcile against current reality, not boilerplate to discard.
+- Re-run Phase 1 reconnaissance for real (don't assume the old docs are
+  still accurate) and diff what you find against what's recorded: new
+  modules get added, removed/renamed ones get removed or updated, changed
+  behavior gets rewritten, everything else is left alone.
+- Preserve ids and structure for anything unchanged, so links, deep-link
+  hashes (`#view=x&node=y`), and any external references to a specific
+  entry keep working across the update.
+- Keep the same viewer engine (`docs/viewer/`) unless it's missing
+  functionality the update needs — this is a shared, versionless asset,
+  not something to fork per update.
+- Refresh the "not true yet" / gaps list and any load-bearing
+  revision/commit notes — these are the fields most likely to have gone
+  stale since the last run.
+- If a whole document (`product/` or `architecture/`) is missing while the
+  other exists, generate only the missing one; don't touch the one that's
+  already there beyond what reconciliation above requires.
+- End with what changed since the last version, not just a description of
+  the current state — the reader who asked for a refresh wants to know
+  what's different.
+
 ## Phase 1 — Reconnaissance (don't skip, don't skim)
 
 Before writing anything, actually read the tree. Parallelize broad
@@ -166,4 +194,6 @@ now cover better, don't leave three copies of the truth:
 
 Run the validator clean, run the browser check clean, and give a one-
 paragraph summary of what's in each document plus the exact commands to
-open them (`open docs/product/index.html` or equivalent).
+open them (`open docs/product/index.html` or equivalent). If this was an
+update to existing docs, lead with what changed since the last version
+instead of re-describing the whole thing.
