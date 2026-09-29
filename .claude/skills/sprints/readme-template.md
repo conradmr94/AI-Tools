@@ -17,6 +17,7 @@ Every sprint file has the same sections, in this order.
 | Context | The facts the tasks rest on, with links to where they were established. Optional. |
 | Business track | `Must` and `Stretch` task lists. |
 | Engineering track | `Must` and `Stretch` task lists. |
+| Parallel plan | Which engineering tasks can run at the same time in separate agents, grouped into waves with a merge order, plus the tasks that must run serially or are blocked. |
 | Decisions needed | Choices only the owner can make that block a task, with the options and a recommendation. Resolved entries stay, marked resolved. |
 | Carry-over | Unfinished tasks from the previous sprint, mapped to their ids here, with why. |
 | Retrospective | Filled in when the sprint closes: what shipped, what slipped, what changed mid-sprint, what changes next time. |
@@ -26,6 +27,7 @@ Every sprint file has the same sections, in this order.
 - **One checkbox per task.** Each has a stable id (`B1`, `E3`), an owner, and a done-when statement someone else could verify. An owner may be split, for example `(Owner, with Claude drafting)` or `(Claude, Owner approves)`.
 - **Link the owning document.** Link the document that owns the outcome (a spec gap row, a design, the evidence log) and name its id, so the outcome lands where the project keeps it.
 - **Ordering.** Dependencies and ordering are stated in the task, for example "Blocked on D2." or "Only after E11."
+- **Touches.** Each engineering task lists the directories, files and shared resources it will edit, for example "Touches: `src/auth/`, `docs/spec.md`." The parallel plan is built from these.
 - **Size of a must task.** A must task fits inside the sprint with the people available. If it does not, split it and move the remainder to stretch or a later sprint.
 - **Stretch tasks.** Start a stretch task only after every must task is done or blocked on a listed decision.
 - **Tasks added mid-sprint.** They take the next free id and begin `Added YYYY-MM-DD after <why>.` Ids are never reused or renumbered within a sprint.
@@ -37,6 +39,13 @@ Progress is appended to the task's own bullet as dated notes, and the plan text 
 - `Status YYYY-MM-DD: …` records partial progress. The box stays unticked.
 - `Done YYYY-MM-DD as <gap id>: …` records completion, with what shipped and any narrowing from the plan. The box is ticked in the same commit as the work.
 - `Not done: …, carried in <where>.` names any remainder and the place it now lives.
+
+## Parallel plan
+
+- **Two tasks share a wave only if** neither depends on the other, their `Touches:` do not overlap (shared lockfiles, migrations, schema, generated files, config and document rows count as overlap), and neither's done-when needs the other's output.
+- **Waves.** Wave 1 starts together. Later waves start after the earlier wave has merged. Each wave states its merge order. Tasks that cannot share a wave are listed as `Serial` with the reason, and tasks waiting on a decision as `Blocked`.
+- **One agent per task, one worktree per agent.** An agent stays inside its task's `Touches:` and does not edit the sprint file. It reports its `Done` note, and whoever merges the wave ticks the box.
+- **The plan is a schedule, not a history.** Edit it in place as tasks finish or are added.
 
 ## Decisions
 

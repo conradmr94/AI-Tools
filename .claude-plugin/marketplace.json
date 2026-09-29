@@ -16,7 +16,7 @@
     },
     {
       "name": "sprints",
-      "description": "Sprint planning records in docs/sprints/ — open and close ad hoc sprints, track tasks with a dated status trail, record decisions and write retrospectives.",
+      "description": "Sprint planning records in docs/sprints/ — open and close ad hoc sprints, track tasks with a dated status trail, plan which engineering tasks can run in parallel, record decisions and write retrospectives.",
       "source": "./",
       "version": "1.0.0",
       "strict": false,

@@ -7,7 +7,7 @@ My personal grab bag of [Claude Code](https://claude.com/claude-code) skills —
 | Skill | What it does |
 |---|---|
 | [`explain-repo`](.claude/skills/explain-repo/SKILL.md) | Turns any codebase into two browsable HTML docs — how the product works, how the code works — so nobody has to spend 45 minutes grepping around to get oriented. |
-| [`sprints`](.claude/skills/sprints/SKILL.md) | Sprint planning records in `docs/sprints/` — open and close sprints ad hoc, track tasks with a dated status trail, log decisions, and write retrospectives. Checks the open sprint before dev work and updates it as tasks finish. |
+| [`sprints`](.claude/skills/sprints/SKILL.md) | Sprint planning records in `docs/sprints/` — open and close sprints ad hoc, track tasks with a dated status trail, sort engineering tasks into waves that can run in parallel across multiple agents, log decisions, and write retrospectives. Checks the open sprint before dev work and updates it as tasks finish. |
 
 More to come as I need them.
 

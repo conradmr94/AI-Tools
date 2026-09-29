@@ -27,12 +27,20 @@ The facts the tasks rest on, each with a link, commit hash or date: what the pre
 
 ### Must
 
-- [ ] **E1** (Claude) Task, linking its owning document and naming its gap or workstream id. Done when: verifiable outcome.
-- [ ] **E2** (Claude, Owner approves) Task. Blocked on D1. Done when: verifiable outcome.
+- [ ] **E1** (Claude) Task, linking its owning document and naming its gap or workstream id. Touches: `path/`, `docs/file.md`. Done when: verifiable outcome.
+- [ ] **E2** (Claude, Owner approves) Task. Blocked on D1. Touches: `path/`. Done when: verifiable outcome.
+- [ ] **E4** (Claude) Task. Touches: `other-path/`. Done when: verifiable outcome.
 
 ### Stretch
 
-- [ ] **E3** (Claude) Task. Only after E1. Done when: verifiable outcome.
+- [ ] **E3** (Claude) Task. Only after E1. Touches: `path/`. Done when: verifiable outcome.
+
+## Parallel plan
+
+- **Wave 1 (start together):** E1, E4. No dependencies between them; `Touches:` are disjoint. Merge order: E1, E4.
+- **Wave 2 (after wave 1 merges):** E3 (needs E1).
+- **Serial:** a task that changes a shared resource (lockfile, migration, schema) or whose footprint is unknown, with the reason.
+- **Blocked:** E2 on D1.
 
 ## Decisions needed
 

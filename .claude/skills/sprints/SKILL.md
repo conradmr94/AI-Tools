@@ -1,6 +1,6 @@
 ---
 name: sprints
-description: Sprint planning records in docs/sprints/ - a sprint is a work period the user opens and closes ad hoc, holding the loosely grouped tasks they want done in it. Use when the user asks to set up sprints, open or plan a sprint, close a sprint, add a task, record a decision, or write a retrospective. Also use without being asked - at the start of any dev task, check the open sprint to see if the work maps to a task; when a task finishes, tick it and add its done note; when work turns up a new task, decision or blocker, record it in the open sprint.
+description: Sprint planning records in docs/sprints/ - a sprint is a work period the user opens and closes ad hoc, holding the loosely grouped tasks they want done in it, with engineering tasks sorted into waves that can run in parallel across multiple agents. Use when the user asks to set up sprints, open or plan a sprint, close a sprint, add a task, record a decision, write a retrospective, or work out which tasks can run in parallel. Also use without being asked - at the start of any dev task, check the open sprint to see if the work maps to a task; when a task finishes, tick it and add its done note; when work turns up a new task, decision or blocker, record it in the open sprint.
 ---
 
 # Sprints
@@ -39,19 +39,61 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 - **Where tasks come from:** the owning documents (open gap rows, design workstreams, plan stages), recent commits, the user's requests, and the previous sprint's unfinished tasks and retrospective. Do not invent work that no document and no user request supports.
 - **Must versus stretch:** a must task fits inside the period with the people available. Split a large task and move the remainder to stretch or a later sprint. When the order of the must tasks matters, say so in the task, for example "Ordered last: if the period runs out it carries over rather than compressing E10."
 - **Carry-over:** list every unfinished task from the previous sprint (see "Carry-over").
+- **Parallel plan:** once the engineering tasks are written, sort them into waves (see "Parallel plan").
 - After writing, show the user the goal and the must tasks in a few lines. The plan is a draft for them to change.
 
 ## Task format
 
 ```
-- [ ] **E1** (Owner) What to do, linking the owning doc and naming the gap/workstream id. Done when: <something another person could verify>.
+- [ ] **E1** (Owner) What to do, linking the owning doc and naming the gap/workstream id. Touches: `src/auth/`, `docs/spec.md`. Done when: <something another person could verify>.
 ```
+
+`Touches:` is required on engineering tasks and optional elsewhere. It lists the directories, files and shared resources the task will edit (see "Parallel plan").
 
 - **Ids:** use the track's first letter (`B`, `P`, `E`) and number within the sprint. Never reuse or renumber an id within a sprint, even when tasks move between must and stretch. Ids restart at 1 in each new sprint.
 - **Owner:** the user's first name, `Claude`, or a split of the work. Use split forms when two parties are involved: `(Owner, with Claude drafting)`, `(Claude, Owner approves)`, `(Owner runs, Claude prepares)`, `(Claude, Owner approves the design)`.
 - **Dependencies:** state them in the task: `Blocked on D2.`, `Only after E11, which defines what it must return.`, `Should not start before B2 settles D1.`
 - **Done when:** name the artifacts that prove completion: tests passing, a row in the owning doc, a gap-table entry, a recorded run, the user's approval. A task that needs the user's approval is done when they give it, not when the draft exists.
 - **Added mid-sprint:** give the task the next free id in its track, put it in must or stretch, and start it with `Added YYYY-MM-DD after <what prompted it>.`
+
+## Parallel plan
+
+The `## Parallel plan` section sits after the Engineering track and says which engineering tasks can be handed to separate agents at the same time. Business tasks are run by the user and are not planned this way.
+
+**Two tasks can run in parallel only if all of these hold:**
+
+1. Neither depends on the other, directly or through a chain: no `Blocked on`, `Only after` or `Should not start before` links between them, and neither waits on an open decision.
+2. Their `Touches:` do not overlap. Count shared resources as overlap, not just shared files: lockfiles and manifests, database migrations, schema and generated files, shared config, route or registry tables, a test fixture, and the same row or section of an owning document.
+3. Neither's done-when needs the other's output, such as a test suite or build that only passes once both are in.
+
+**How to build the plan:**
+
+- Get `Touches:` from the code, not a guess: read the directories and files each task will change. If a task's footprint cannot be worked out yet, put it in the serial group and say why.
+- Group into waves. Wave 1 is every task with no unmet dependency and no overlap with another wave 1 task. Wave 2 is what unblocks once wave 1 has merged, checked the same way. If two otherwise-independent tasks overlap, put the larger one in the earlier wave and the other in the next, or list them under Serial.
+- Anything that cannot share a wave goes under **Serial** with the reason: it changes a shared resource, it touches everything, or its footprint is unknown.
+- Give a merge order for each wave, most foundational first, so the merger knows which conflicts to expect.
+- Only tasks owned by Claude (including `Claude, Owner approves`) go in waves. Tasks the user runs, and tasks waiting on a decision, are listed as blocked with the decision id.
+- Keep waves small enough for the user to supervise. Say so if a wave has more than about four tasks, and suggest splitting it.
+
+**Format:**
+
+```
+## Parallel plan
+
+- **Wave 1 (start together):** E1, E2, E4. No dependencies among them; `Touches:` are disjoint. Merge order: E1, E2, E4.
+- **Wave 2 (after wave 1 merges):** E3 (needs E1), E5 (needs E2).
+- **Serial:** E6 edits `package.json` and the schema, which E1 and E2 also change. Run it alone after wave 2.
+- **Blocked:** E7 on D1.
+```
+
+**Maintenance:**
+
+- The plan is a schedule, not a history: edit it in place as tasks finish, are added or change footprint. Task ids are still never renumbered.
+- A task added mid-sprint is placed in the plan in the same edit that adds it.
+- If a task's real footprint grows past its `Touches:`, update `Touches:` and re-check its wave.
+- Stretch tasks join the plan only once the must tasks are done or blocked, per the stretch rule.
+
+**Handing a wave to agents:** when the user asks to run a wave, start one agent per task in a single step, each in its own worktree. Give each agent its task line, the done-when, the owning documents to read and its `Touches:` boundary, and tell it to stay inside that boundary, not to edit the sprint file, and to report its `Done` note. If an agent finds it must change a file outside its `Touches:`, it stops and reports rather than editing it. Do not launch agents unless asked.
 
 ## Recording progress (the status trail)
 
@@ -62,6 +104,7 @@ The task text is the plan. Progress is appended to the end of the same bullet as
 - **Done with remainder:** if part of the scope did not ship, add `Not done: <what>, carried in <where it now lives>.` The remainder always lands somewhere: a gap row, a later task, or the next sprint.
 - **Approval:** when the user approves, record how, for example "Owner approved the record on 2026-09-29 by merging #15. Done."
 - Tick the box in the same commit as the work that met the done-when. Never tick a task whose done-when is not actually met.
+- **Exception, tasks run in a parallel wave:** the agent does not edit the sprint file, because agents editing adjacent bullets of one file conflict on merge. It ends its work with the ready-to-paste `Done` (or `Status`, `Not done`) note in its report or PR description, and whoever merges the wave, or the coordinating session, ticks the box and appends the note once the work has merged.
 - Never change an owning document's status just because a task closed. Update the owning document as the task says, then tick.
 
 ## Decisions needed
@@ -84,7 +127,7 @@ List only choices the user must make that block a task.
 
 ## Using sprints during normal work (do this without being asked)
 
-- Before a dev task, if `docs/sprints/` exists, read the open sprint. If the work matches a task, mention its id briefly and use its done-when as the finish line.
+- Before a dev task, if `docs/sprints/` exists, read the open sprint. If the work matches a task, mention its id briefly and use its done-when as the finish line. If the user says the session is one agent of a parallel wave, work only that task, stay inside its `Touches:`, and leave the sprint file to the coordinating session.
 - When work completes a task, record it per "Recording progress" in the same commit.
 - When work reveals a new blocker or user decision, add it to Decisions needed. When it reveals a must-fix defect or new significant work, add a task with an `Added` note. Do this rather than only mentioning it in chat.
 - Work that matches no task is fine; do not add every small fix. Add a task only when the user would want to see it on the period's plan.
@@ -94,7 +137,7 @@ List only choices the user must make that block a task.
 
 When the user asks to close the sprint, or opens a new one while the previous retrospective is empty:
 
-1. Build the retrospective from the file's own status trail and the commits: short, factual bullets. **Shipped:** task ids, with gap ids or commits. **Slipped:** task ids, with why. **Changed mid-sprint:** tasks added and decisions taken. **Changes next time:** what to do differently.
+1. Build the retrospective from the file's own status trail and the commits: short, factual bullets. **Shipped:** task ids, with gap ids or commits. **Slipped:** task ids, with why. **Changed mid-sprint:** tasks added and decisions taken. **Changes next time:** what to do differently, including any merge conflict a parallel wave hit that a better `Touches:` would have predicted.
 2. Move lessons that change how the project works into the owning document (engineering guide, design, spec), not just the retrospective.
 3. Carry unfinished tasks into the new sprint's Carry-over.
 4. Add the actual close date under Dates: `- Closed: YYYY-MM-DD.`
