@@ -37,6 +37,7 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 - **Dates:** the opening date, a target close date if the user gives one, and the fixed external dates the work is moving toward, each with its source link.
 - **Context:** only the facts the tasks rest on, each with a link, commit hash or date. Start with what the previous sprint closed and what the user approved since then.
 - **Where tasks come from:** the owning documents (open gap rows, design workstreams, plan stages), recent commits, the user's requests, and the previous sprint's unfinished tasks and retrospective. Do not invent work that no document and no user request supports.
+- **Numbering:** write the tasks in dependency order and number each track from 1 in that order, following "Numbering follows dependency order". Decide the order before assigning ids, and check that no task's id is lower than a task it depends on.
 - **Must versus stretch:** a must task fits inside the period with the people available. Split a large task and move the remainder to stretch or a later sprint. When the order of the must tasks matters, say so in the task, for example "Ordered last: if the period runs out it carries over rather than compressing E10."
 - **Carry-over:** list every unfinished task from the previous sprint (see "Carry-over").
 - **Parallel plan:** once the engineering tasks are written, sort them into waves (see "Parallel plan").
@@ -50,11 +51,19 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 
 `Touches:` is required on engineering tasks and optional elsewhere. It lists the directories, files and shared resources the task will edit (see "Parallel plan").
 
-- **Ids:** use the track's first letter (`B`, `P`, `E`) and number within the sprint. Never reuse or renumber an id within a sprint, even when tasks move between must and stretch. Ids restart at 1 in each new sprint.
+- **Ids:** use the track's first letter (`B`, `P`, `E`) and a number. Ids restart at 1 in each new sprint.
+- **Numbering follows dependency order.** Within a track, a task's id is higher than the id of every task it depends on, so working through the ids in order never hits a task before its prerequisites. One sequence covers Must and Stretch together, so a stretch task can sit between must ids, and a task that moves between the two keeps its id. Tasks with no order between them are numbered in the order they would be run (for engineering, by wave and merge order in the Parallel plan).
+- **When ids freeze.** While the sprint is still a draft, renumber freely so the ids match the order. Once any task has a status note or a tick, ids are frozen: never reuse or renumber one, and an abandoned task's id stays retired. If a later dependency change leaves unstarted tasks out of order, tell the user and offer to renumber rather than doing it unprompted.
+- **Sub-tasks:** work discovered while doing a task, that must be done before moving on, is a sub-task of it, not the next whole number. Its id is the parent's id plus `.n`, the next free `n` under that parent: `E3.1`, then `E3.2`. The parent is the innermost task being worked, so a requirement found while doing `E3.1` becomes `E3.1.1`. Sub-ids sort numerically at each level (`E3.2` before `E3.10`, both before `E4`), so the ids stay increasing in dependency order without renumbering anything. List a sub-task as an indented bullet directly under its parent, in the parent's track and in the parent's Must or Stretch list.
+- **Parent and sub-tasks:** the parent stays open until every sub-task it depends on is done. While it waits, append `Status YYYY-MM-DD: paused for E3.1.` to the parent. If a sub-task is a prerequisite of a later task but not of its parent, say so on that later task, for example `Blocked on E3.1.`
 - **Owner:** the user's first name, `Claude`, or a split of the work. Use split forms when two parties are involved: `(Owner, with Claude drafting)`, `(Claude, Owner approves)`, `(Owner runs, Claude prepares)`, `(Claude, Owner approves the design)`.
 - **Dependencies:** state them in the task: `Blocked on D2.`, `Only after E11, which defines what it must return.`, `Should not start before B2 settles D1.`
 - **Done when:** name the artifacts that prove completion: tests passing, a row in the owning doc, a gap-table entry, a recorded run, the user's approval. A task that needs the user's approval is done when they give it, not when the draft exists.
-- **Added mid-sprint:** give the task the next free id in its track, put it in must or stretch, and start it with `Added YYYY-MM-DD after <what prompted it>.`
+- **Added mid-sprint:** never give it the next whole number just because it is new. Its id is set by where it falls in dependency order:
+  - Found while working a task, and needed before moving on: a sub-task of that task (see "Sub-tasks"). Start it with `Added YYYY-MM-DD while working E3, after <what prompted it>. Needed before E4.`
+  - Not found while working a task: place it directly after the last task it depends on, as a sub-id of that task (`E2.1`), and start it with `Added YYYY-MM-DD after <what prompted it>.`
+  - Comes after every existing task: the next whole number is correct.
+  - Put it in must or stretch as the user wants; a sub-task goes in its parent's list.
 
 ## Parallel plan
 
@@ -88,12 +97,13 @@ The `## Parallel plan` section sits after the Engineering track and says which e
 
 **Maintenance:**
 
-- The plan is a schedule, not a history: edit it in place as tasks finish, are added or change footprint. Task ids are still never renumbered.
-- A task added mid-sprint is placed in the plan in the same edit that adds it.
+- The plan is a schedule, not a history: edit it in place as tasks finish, are added or change footprint. Frozen task ids are still never renumbered.
+- A task added mid-sprint is placed in the plan in the same edit that adds it. A sub-task runs ahead of the next task that depends on its parent, so it goes in the wave before that task's, or under Serial if it cannot share one.
+- Wave order and id order agree: a lower id is never in a later wave than a higher id it does not depend on unless the plan says why.
 - If a task's real footprint grows past its `Touches:`, update `Touches:` and re-check its wave.
 - Stretch tasks join the plan only once the must tasks are done or blocked, per the stretch rule.
 
-**Handing a wave to agents:** when the user asks to run a wave, start one agent per task in a single step, each in its own worktree. Give each agent its task line, the done-when, the owning documents to read and its `Touches:` boundary, and tell it to stay inside that boundary, not to edit the sprint file, and to report its `Done` note. If an agent finds it must change a file outside its `Touches:`, it stops and reports rather than editing it. Do not launch agents unless asked.
+**Handing a wave to agents:** when the user asks to run a wave, start one agent per task in a single step, each in its own worktree. Give each agent its task line, the done-when, the owning documents to read and its `Touches:` boundary, and tell it to stay inside that boundary, not to edit the sprint file, and to report its `Done` note. If an agent finds it must change a file outside its `Touches:`, it stops and reports rather than editing it. If it discovers a new requirement, it reports what it is, why, and which task it must precede, and the coordinating session records it as a sub-task of that agent's task; sub-tasks under different parents cannot collide on ids. Do not launch agents unless asked.
 
 ## Recording progress (the status trail)
 
@@ -120,7 +130,7 @@ List only choices the user must make that block a task.
 
 ## Carry-over
 
-- List every unfinished must task from the previous sprint, and every unfinished stretch task the user still wants, mapped to its new id: `- B3 of sprint 2026-09-28 (the outreach follow-ups) continues as B2 here: <why>.`
+- List every unfinished must task from the previous sprint, and every unfinished stretch task the user still wants, mapped to its new id: `- B3 of sprint 2026-09-28 (the outreach follow-ups) continues as B2 here: <why>.` Carried tasks, sub-tasks included, are renumbered from 1 in dependency order like any other task in the new sprint.
 - **Conditional carry:** a carry-over may depend on a date: "as B1 here, if it is not on record by 2026-10-04."
 - **Unfinished tasks:** never drop one silently. If the user abandons it, say so in Carry-over with the reason.
 - **First sprint:** write "None. This is the first sprint."
@@ -129,7 +139,7 @@ List only choices the user must make that block a task.
 
 - Before a dev task, if `docs/sprints/` exists, read the open sprint. If the work matches a task, mention its id briefly and use its done-when as the finish line. If the user says the session is one agent of a parallel wave, work only that task, stay inside its `Touches:`, and leave the sprint file to the coordinating session.
 - When work completes a task, record it per "Recording progress" in the same commit.
-- When work reveals a new blocker or user decision, add it to Decisions needed. When it reveals a must-fix defect or new significant work, add a task with an `Added` note. Do this rather than only mentioning it in chat.
+- When work reveals a new blocker or user decision, add it to Decisions needed. When it reveals a must-fix defect or new significant work, add a task with an `Added` note, numbered by dependency order: a sub-task of the task being worked if it must be done before moving on (`E3.1`, not `E11`). Do this rather than only mentioning it in chat.
 - Work that matches no task is fine; do not add every small fix. Add a task only when the user would want to see it on the period's plan.
 - When a decision is resolved in conversation, update its entry in the same turn.
 
