@@ -51,7 +51,7 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 
 `Touches:` is required on engineering tasks and optional elsewhere. It lists the directories, files and shared resources the task will edit (see "Parallel plan").
 
-- **Ids:** use the track's first letter (`B`, `P`, `E`) and a number. Ids restart at 1 in each new sprint.
+- **Ids:** use the track's first letter (`B`, `P`, `E`) and a number. Numbering never carries over between sprints: every sprint numbers each track from 1, in that sprint's own dependency order, whatever the previous sprint's ids were. A carried-over task gets a fresh id like any other task, and a sub-task id such as `E3.1` never continues into the next sprint.
 - **Numbering follows dependency order.** Within a track, a task's id is higher than the id of every task it depends on, so working through the ids in order never hits a task before its prerequisites. One sequence covers Must and Stretch together, so a stretch task can sit between must ids, and a task that moves between the two keeps its id. Tasks with no order between them are numbered in the order they would be run (for engineering, by wave and merge order in the Parallel plan).
 - **When ids freeze.** While the sprint is still a draft, renumber freely so the ids match the order. Once any task has a status note or a tick, ids are frozen: never reuse or renumber one, and an abandoned task's id stays retired. If a later dependency change leaves unstarted tasks out of order, tell the user and offer to renumber rather than doing it unprompted.
 - **Sub-tasks:** work discovered while doing a task, that must be done before moving on, is a sub-task of it, not the next whole number. Its id is the parent's id plus `.n`, the next free `n` under that parent: `E3.1`, then `E3.2`. The parent is the innermost task being worked, so a requirement found while doing `E3.1` becomes `E3.1.1`. Sub-ids sort numerically at each level (`E3.2` before `E3.10`, both before `E4`), so the ids stay increasing in dependency order without renumbering anything. List a sub-task as an indented bullet directly under its parent, in the parent's track and in the parent's Must or Stretch list.
@@ -130,7 +130,7 @@ List only choices the user must make that block a task.
 
 ## Carry-over
 
-- List every unfinished must task from the previous sprint, and every unfinished stretch task the user still wants, mapped to its new id: `- B3 of sprint 2026-09-28 (the outreach follow-ups) continues as B2 here: <why>.` Carried tasks, sub-tasks included, are renumbered from 1 in dependency order like any other task in the new sprint.
+- List every unfinished must task from the previous sprint, and every unfinished stretch task the user still wants, mapped to its new id: `- B3 of sprint 2026-09-28 (the outreach follow-ups) continues as B2 here: <why>.` Carried tasks, sub-tasks included, do not keep their old ids: they are numbered from 1 in dependency order like any other task in the new sprint. The old id appears only in this Carry-over line, always with its sprint date, and dependencies in the carried task's text use the new ids.
 - **Conditional carry:** a carry-over may depend on a date: "as B1 here, if it is not on record by 2026-10-04."
 - **Unfinished tasks:** never drop one silently. If the user abandons it, say so in Carry-over with the reason.
 - **First sprint:** write "None. This is the first sprint."
