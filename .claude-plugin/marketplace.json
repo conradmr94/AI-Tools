@@ -10,7 +10,17 @@
       "name": "explain-repo",
       "description": "Generate a living, browsable architecture — two interactive HTML documents (how the product works, how the code works) for the current repository.",
       "source": "./",
-      "version": "1.0.0"
+      "version": "1.0.0",
+      "strict": false,
+      "skills": ["./.claude/skills/explain-repo"]
+    },
+    {
+      "name": "sprints",
+      "description": "Sprint planning records in docs/sprints/ — open and close ad hoc sprints, track tasks with a dated status trail, record decisions and write retrospectives.",
+      "source": "./",
+      "version": "1.0.0",
+      "strict": false,
+      "skills": ["./.claude/skills/sprints"]
     }
   ]
 }
