@@ -97,7 +97,7 @@ The `## Parallel plan` section sits after the Engineering track and says which e
 
 **Maintenance:**
 
-- The plan is a schedule, not a history: edit it in place as tasks finish, are added or change footprint. Frozen task ids are still never renumbered.
+- The plan is a schedule, not a history: edit it in place as tasks finish (strike through the ids of done tasks), are added or change footprint. Frozen task ids are still never renumbered.
 - A task added mid-sprint is placed in the plan in the same edit that adds it. A sub-task runs ahead of the next task that depends on its parent, so it goes in the wave before that task's, or under Serial if it cannot share one.
 - Wave order and id order agree: a lower id is never in a later wave than a higher id it does not depend on unless the plan says why.
 - If a task's real footprint grows past its `Touches:`, update `Touches:` and re-check its wave.
@@ -110,11 +110,18 @@ The `## Parallel plan` section sits after the Engineering track and says which e
 The task text is the plan. Progress is appended to the end of the same bullet as dated notes, so the plan stays readable and the history stays in place.
 
 - **Partial progress:** leave the box unticked and append `Status YYYY-MM-DD: <what exists now, with links>.` Add further `Status` notes over time rather than rewriting earlier ones.
-- **Done:** tick the box and append `Done YYYY-MM-DD as <gap/record id>: <what shipped, concretely>.` If the result differs from the plan, say how in the same note: "with one narrowing: …", "replaced the same day because …".
+- **Done:** tick the box, strike through the task, and append `Done YYYY-MM-DD as <gap/record id>: <what shipped, concretely>.` If the result differs from the plan, say how in the same note: "with one narrowing: …", "replaced the same day because …".
+- **Striking through:** wrap everything on the bullet before the `Done` note in `~~ ~~`, from the id through the plan text and any earlier `Status` notes. Leave the `Done` note, and any `Not done` note, outside the strikethrough so the outcome stays readable:
+
+  ```
+  - [x] ~~**E1** (Claude) What to do. Touches: `src/auth/`. Done when: tests pass. Status 2026-09-27: schema merged.~~ Done 2026-09-29 as GAP-12: shipped.
+  ```
+
+  Strike a parent only when the parent itself is done, not when its sub-tasks are; a struck-through parent keeps its sub-task bullets beneath it, each struck through when done. A task that is not done, including one abandoned or carried over, is never struck through.
 - **Done with remainder:** if part of the scope did not ship, add `Not done: <what>, carried in <where it now lives>.` The remainder always lands somewhere: a gap row, a later task, or the next sprint.
 - **Approval:** when the user approves, record how, for example "Owner approved the record on 2026-09-29 by merging #15. Done."
-- Tick the box in the same commit as the work that met the done-when. Never tick a task whose done-when is not actually met.
-- **Exception, tasks run in a parallel wave:** the agent does not edit the sprint file, because agents editing adjacent bullets of one file conflict on merge. It ends its work with the ready-to-paste `Done` (or `Status`, `Not done`) note in its report or PR description, and whoever merges the wave, or the coordinating session, ticks the box and appends the note once the work has merged.
+- Tick the box and strike the task through in the same commit as the work that met the done-when. Never tick or strike a task whose done-when is not actually met.
+- **Exception, tasks run in a parallel wave:** the agent does not edit the sprint file, because agents editing adjacent bullets of one file conflict on merge. It ends its work with the ready-to-paste `Done` (or `Status`, `Not done`) note in its report or PR description, and whoever merges the wave, or the coordinating session, ticks the box, strikes the task through and appends the note once the work has merged.
 - Never change an owning document's status just because a task closed. Update the owning document as the task says, then tick.
 
 ## Decisions needed

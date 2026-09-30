@@ -38,7 +38,8 @@ Every sprint file has the same sections, in this order.
 Progress is appended to the task's own bullet as dated notes, and the plan text above it stays unchanged.
 
 - `Status YYYY-MM-DD: …` records partial progress. The box stays unticked.
-- `Done YYYY-MM-DD as <gap id>: …` records completion, with what shipped and any narrowing from the plan. The box is ticked in the same commit as the work.
+- `Done YYYY-MM-DD as <gap id>: …` records completion, with what shipped and any narrowing from the plan. The box is ticked and the task struck through in the same commit as the work.
+- **Strikethrough.** A done task is wrapped in `~~ ~~` from its id up to the `Done` note, which stays outside so the outcome is readable, for example `- [x] ~~**E1** (Claude) Task. Done when: outcome.~~ Done YYYY-MM-DD as <gap id>: …`. A task that is not done is never struck through, and a parent is struck only when the parent itself is done.
 - `Not done: …, carried in <where>.` names any remainder and the place it now lives.
 
 ## Parallel plan
