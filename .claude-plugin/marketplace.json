@@ -10,7 +10,7 @@
       "name": "explain-repo",
       "description": "Generate a living, browsable architecture — two interactive HTML documents (how the product works, how the code works) for the current repository.",
       "source": "./",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "strict": false,
       "skills": ["./.claude/skills/explain-repo"]
     },
