@@ -25,7 +25,7 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 2. Pick the tracks. The default is two: a non-engineering track and an Engineering track. Call the first Business for a company with customers, or Product for a solo product (practice, user feedback, content). Ask only if it is genuinely unclear.
 3. Write `docs/sprints/README.md` from [readme-template.md](readme-template.md), substituting the track names, owning documents and project rules. Keep links relative and correct.
 4. Open the first sprint from [sprint-template.md](sprint-template.md) (see "Opening a sprint").
-5. Add this line to the project's `CLAUDE.md`, creating a section if needed, so future sessions pick up sprints unprompted:
+5. Add this line to the project's agent instructions file (`CLAUDE.md` for Claude Code, `AGENTS.md` for Codex; update whichever exist, or create the one for the agent you are running in if neither does), so future sessions pick up sprints unprompted:
    `Sprints: plans live in docs/sprints/ (see its README). Use the sprints skill: check the open sprint before starting work and update it as tasks finish.`
    If the project's engineering guide lists where documents live, add the sprints directory there too.
 
@@ -56,7 +56,7 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 - **When ids freeze.** While the sprint is still a draft, renumber freely so the ids match the order. Once any task has a status note or a tick, ids are frozen: never reuse or renumber one, and an abandoned task's id stays retired. If a later dependency change leaves unstarted tasks out of order, tell the user and offer to renumber rather than doing it unprompted.
 - **Sub-tasks:** work discovered while doing a task, that must be done before moving on, is a sub-task of it, not the next whole number. Its id is the parent's id plus `.n`, the next free `n` under that parent: `E3.1`, then `E3.2`. The parent is the innermost task being worked, so a requirement found while doing `E3.1` becomes `E3.1.1`. Sub-ids sort numerically at each level (`E3.2` before `E3.10`, both before `E4`), so the ids stay increasing in dependency order without renumbering anything. List a sub-task as an indented bullet directly under its parent, in the parent's track and in the parent's Must or Stretch list.
 - **Parent and sub-tasks:** the parent stays open until every sub-task it depends on is done. While it waits, append `Status YYYY-MM-DD: paused for E3.1.` to the parent. If a sub-task is a prerequisite of a later task but not of its parent, say so on that later task, for example `Blocked on E3.1.`
-- **Owner:** the user's first name, `Claude`, or a split of the work. Use split forms when two parties are involved: `(Owner, with Claude drafting)`, `(Claude, Owner approves)`, `(Owner runs, Claude prepares)`, `(Claude, Owner approves the design)`.
+- **Owner:** the user's first name, `Agent` (whichever AI coding agent picks the task up; read an older `Claude` owner as `Agent`), or a split of the work. Use split forms when two parties are involved: `(Owner, with Agent drafting)`, `(Agent, Owner approves)`, `(Owner runs, Agent prepares)`, `(Agent, Owner approves the design)`.
 - **Dependencies:** state them in the task: `Blocked on D2.`, `Only after E11, which defines what it must return.`, `Should not start before B2 settles D1.`
 - **Done when:** name the artifacts that prove completion: tests passing, a row in the owning doc, a gap-table entry, a recorded run, the user's approval. A task that needs the user's approval is done when they give it, not when the draft exists.
 - **Added mid-sprint:** never give it the next whole number just because it is new. Its id is set by where it falls in dependency order:
@@ -81,7 +81,7 @@ The `## Parallel plan` section sits after the Engineering track and says which e
 - Group into waves. Wave 1 is every task with no unmet dependency and no overlap with another wave 1 task. Wave 2 is what unblocks once wave 1 has merged, checked the same way. If two otherwise-independent tasks overlap, put the larger one in the earlier wave and the other in the next, or list them under Serial.
 - Anything that cannot share a wave goes under **Serial** with the reason: it changes a shared resource, it touches everything, or its footprint is unknown.
 - Give a merge order for each wave, most foundational first, so the merger knows which conflicts to expect.
-- Only tasks owned by Claude (including `Claude, Owner approves`) go in waves. Tasks the user runs, and tasks waiting on a decision, are listed as blocked with the decision id.
+- Only tasks owned by Agent (including `Agent, Owner approves`) go in waves. Tasks the user runs, and tasks waiting on a decision, are listed as blocked with the decision id.
 - Keep waves small enough for the user to supervise. Say so if a wave has more than about four tasks, and suggest splitting it.
 
 **Format:**
@@ -114,7 +114,7 @@ The task text is the plan. Progress is appended to the end of the same bullet as
 - **Striking through:** wrap everything on the bullet before the `Done` note in `~~ ~~`, from the id through the plan text and any earlier `Status` notes. Leave the `Done` note, and any `Not done` note, outside the strikethrough so the outcome stays readable:
 
   ```
-  - [x] ~~**E1** (Claude) What to do. Touches: `src/auth/`. Done when: tests pass. Status 2026-09-27: schema merged.~~ Done 2026-09-29 as GAP-12: shipped.
+  - [x] ~~**E1** (Agent) What to do. Touches: `src/auth/`. Done when: tests pass. Status 2026-09-27: schema merged.~~ Done 2026-09-29 as GAP-12: shipped.
   ```
 
   Strike a parent only when the parent itself is done, not when its sub-tasks are; a struck-through parent keeps its sub-task bullets beneath it, each struck through when done. A task that is not done, including one abandoned or carried over, is never struck through.

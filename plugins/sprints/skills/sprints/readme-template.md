@@ -24,7 +24,7 @@ Every sprint file has the same sections, in this order.
 
 ## Task format
 
-- **One checkbox per task.** Each has a stable id (`B1`, `E3`), an owner, and a done-when statement someone else could verify. An owner may be split, for example `(Owner, with Claude drafting)` or `(Claude, Owner approves)`.
+- **One checkbox per task.** Each has a stable id (`B1`, `E3`), an owner, and a done-when statement someone else could verify. An owner may be split, for example `(Owner, with Agent drafting)` or `(Agent, Owner approves)`.
 - **Link the owning document.** Link the document that owns the outcome (a spec gap row, a design, the evidence log) and name its id, so the outcome lands where the project keeps it.
 - **Ordering.** Dependencies and ordering are stated in the task, for example "Blocked on D2." or "Only after E11."
 - **Touches.** Each engineering task lists the directories, files and shared resources it will edit, for example "Touches: `src/auth/`, `docs/spec.md`." The parallel plan is built from these.
@@ -39,7 +39,7 @@ Progress is appended to the task's own bullet as dated notes, and the plan text 
 
 - `Status YYYY-MM-DD: …` records partial progress. The box stays unticked.
 - `Done YYYY-MM-DD as <gap id>: …` records completion, with what shipped and any narrowing from the plan. The box is ticked and the task struck through in the same commit as the work.
-- **Strikethrough.** A done task is wrapped in `~~ ~~` from its id up to the `Done` note, which stays outside so the outcome is readable, for example `- [x] ~~**E1** (Claude) Task. Done when: outcome.~~ Done YYYY-MM-DD as <gap id>: …`. A task that is not done is never struck through, and a parent is struck only when the parent itself is done.
+- **Strikethrough.** A done task is wrapped in `~~ ~~` from its id up to the `Done` note, which stays outside so the outcome is readable, for example `- [x] ~~**E1** (Agent) Task. Done when: outcome.~~ Done YYYY-MM-DD as <gap id>: …`. A task that is not done is never struck through, and a parent is struck only when the parent itself is done.
 - `Not done: …, carried in <where>.` names any remainder and the place it now lives.
 
 ## Parallel plan

@@ -29,13 +29,13 @@ The facts the tasks rest on, each with a link, commit hash or date: what the pre
 
 ### Must
 
-- [ ] **E1** (Claude) Task, linking its owning document and naming its gap or workstream id. Touches: `path/`, `docs/file.md`. Done when: verifiable outcome.
-- [ ] **E2** (Claude) Task. Touches: `other-path/`. Done when: verifiable outcome.
-- [ ] **E3** (Claude, Owner approves) Task. Blocked on D1. Touches: `path/`. Done when: verifiable outcome.
+- [ ] **E1** (Agent) Task, linking its owning document and naming its gap or workstream id. Touches: `path/`, `docs/file.md`. Done when: verifiable outcome.
+- [ ] **E2** (Agent) Task. Touches: `other-path/`. Done when: verifiable outcome.
+- [ ] **E3** (Agent, Owner approves) Task. Blocked on D1. Touches: `path/`. Done when: verifiable outcome.
 
 ### Stretch
 
-- [ ] **E4** (Claude) Task. Only after E1. Touches: `path/`. Done when: verifiable outcome.
+- [ ] **E4** (Agent) Task. Only after E1. Touches: `path/`. Done when: verifiable outcome.
 
 ## Parallel plan
 
