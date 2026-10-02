@@ -1,0 +1,19 @@
+{
+  "name": "sprints",
+  "version": "1.0.1",
+  "description": "Sprint planning records in docs/sprints/ — open and close ad hoc sprints, track tasks with a dated status trail, plan which engineering tasks can run in parallel, record decisions and write retrospectives.",
+  "author": {
+    "name": "matt"
+  },
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Sprints",
+    "shortDescription": "Sprint planning records in docs/sprints/",
+    "developerName": "matt",
+    "category": "Productivity",
+    "defaultPrompt": [
+      "Open a sprint",
+      "Which sprint tasks can run in parallel?"
+    ]
+  }
+}

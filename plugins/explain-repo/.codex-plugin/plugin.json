@@ -1,0 +1,18 @@
+{
+  "name": "explain-repo",
+  "version": "1.0.1",
+  "description": "Generate a living, browsable architecture — two interactive HTML documents (how the product works, how the code works) for the current repository.",
+  "author": {
+    "name": "matt"
+  },
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Explain Repo",
+    "shortDescription": "Browsable HTML docs explaining a codebase",
+    "developerName": "matt",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Explain this repo end to end"
+    ]
+  }
+}
