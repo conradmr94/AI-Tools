@@ -129,26 +129,29 @@ The task text is the plan. Progress is appended to the end of the same bullet as
 
 ## Sprint log
 
-The log, `SPRINT-YYYY-MM-DD-LOG.md` beside the sprint file, is the record of what changed in the code and why. The plan says what was meant to happen and how far each task got; the log says what each commit did. Decisions and progress notes belong in the plan, not the log. Start it from [log-template.md](log-template.md). If an open sprint has no log, create it the first time you commit work for one of its tasks, backfilling entries for the sprint's earlier commits from `git log`.
+The log, `SPRINT-YYYY-MM-DD-LOG.md` beside the sprint file, is the record of what changed in the code and why, file by file. The plan says what was meant to happen and how far each task got; the log says what each commit did, in which files, and why. Someone reading it should be able to answer "where does this behaviour live, and what would I see there?" without opening the diff. Decisions and progress notes belong in the plan, not the log. Start it from [log-template.md](log-template.md). If an open sprint has no log, create it the first time you commit work for one of its tasks, backfilling entries for the sprint's earlier commits from `git log`.
 
 It has a short header and three sections, in this order:
 
-- **Header:** the title `# Sprint YYYY-MM-DD — change log`, the paragraph stating the log's rules (newest first, one entry per commit or small group, times from git, decisions and progress belong in the plan) with a link to the plan, and the entry format in a code block.
+- **Header:** the title `# Sprint YYYY-MM-DD — change log`, the paragraph stating the log's rules (newest first, one entry per commit or small group, every touched file listed with why, times from git, decisions and progress belong in the plan) with a link to the plan, and the entry format in a code block.
 - **Snapshot:** a table with one row per engineering task that has started or is planned: `| Task | State | Where |`. State is short and current (`Not started`, `In progress`, `Live QA in progress; fixes committed`, `Done`, `Done, merged`). Where is the branch and the head commit for that task, and the PR if there is one or `no PR yet`. Rewrite rows in place; this section is current state, not history.
-- **Files changed:** every file the sprint's commits have added, changed or removed, one bullet per file, sorted by path, with the ids of the tasks whose commits touched it: ``- `src/harness/ask.ts` — E1, E4``. Mark removed files `(deleted)` and renamed files `old → new`. Build it from git, never from memory: `git log --name-status --format= <commits>` over the commits in the Entries. Keep it current in the same edit as each new entry.
+- **Files changed:** an index of every file the sprint's commits have added, changed or removed, one bullet per file, sorted by path: the path, the ids of the tasks whose commits touched it, and one sentence saying what the sprint's work does in that file now, naming the functions, routes, components or tests a reader would look for: ``- `src/api/app-turn.ts` — E2, E4 — `answerQuestion` finds the question on the tape, takes the asking run's actor as the requester, rejects anyone else, claims the answer once and delivers it.`` This sentence describes the file's current role, so rewrite it in place when a later commit changes that role; the history of how it got there is in the Entries. Mark removed files `(deleted)` and renamed files `old → new`, and say why. Build the list of paths from git, never from memory: `git log --name-status --format= <commits>` over the commits in the Entries. Keep it current in the same edit as each new entry.
 - **Entries:** newest first, one per commit or small group of commits for the same task:
 
   ```
   ### HH:MM · E4 · c70e0c2c · one place for an open question
   - What: the change, in a sentence.
   - Why: the reason, in a sentence.
+  - Files:
+    - `plugins/web-ui/src/ask-card.ts` — the transcript row renders nothing while the viewer can still answer, so the question shows only in the panel above the composer.
+    - `plugins/web-ui/test/ask-card.test.ts` — new test that an open question appears once, outside the transcript.
   ```
 
-  The time is the commit time from `git log --date=format:%H:%M`, never an estimate. Group commits by listing their short hashes comma-separated, and use the newest commit's time. The headline is a few lowercase words naming the outcome, not the mechanics. What says what changed in terms a reviewer would recognise (names of routes, tools, components); Why gives the reason, including the QA finding or review comment that prompted it.
+  The time is the commit time from `git log --date=format:%H:%M`, never an estimate. Group commits by listing their short hashes comma-separated, and use the newest commit's time. The headline is a few lowercase words naming the outcome, not the mechanics. What says what changed in terms a reviewer would recognise (names of routes, tools, components); Why gives the reason, including the QA finding or review comment that prompted it. Files lists every file the commit touched, taken from `git show --name-status --format= <commit>`, one bullet each with the specific change in that file and why it was needed there: name the function, route, component or test, so the line points a reader at the code. A test file says which behaviour the test proves. Never write a bare path or a vague reason such as "updated" or "refactored".
 
 **When to write it:** after each commit for a sprint task, add its entry, update that task's Snapshot row and update Files changed, in the next commit (amending would change the hash the entry names). Commits that match no sprint task are left out. A commit hash is only known after committing, so the log update always trails the work by one commit at most; never leave it for later in the session.
 
-**Parallel waves:** agents in a wave do not edit the log, for the same reason they do not edit the sprint file. Each reports its log entries, and whoever merges the wave adds them, re-sorts Entries by time and updates the Snapshot and Files changed.
+**Parallel waves:** agents in a wave do not edit the log, for the same reason they do not edit the sprint file. Each reports its log entries, including the Files lines for each commit, and whoever merges the wave adds them, re-sorts Entries by time and updates the Snapshot and Files changed.
 
 ## Decisions needed
 
