@@ -2,7 +2,7 @@
 
 # Sprints
 
-A sprint is a work period that opens and closes when the team chooses; it is not a fixed week. Each sprint file holds the tasks the project wants done in that period, grouped into two tracks: business (customer discovery, pilot engagement, evidence) and engineering (shipping code and documentation). Each track splits into tasks that must be done and stretch goals. There is one file per sprint, named by the date it opens: `SPRINT-YYYY-MM-DD.md`. The open sprint is the newest file whose retrospective is not yet filled in.
+A sprint is a work period that opens and closes when the team chooses; it is not a fixed week. Each sprint file holds the tasks the project wants done in that period, grouped into two tracks: business (customer discovery, pilot engagement, evidence) and engineering (shipping code and documentation). Each track splits into tasks that must be done and stretch goals. There is one file per sprint, named by the date it opens: `SPRINT-YYYY-MM-DD.md`, with a change log beside it, `SPRINT-YYYY-MM-DD-LOG.md`. The open sprint is the newest file whose retrospective is not yet filled in.
 
 Sprint files are planning records and decide nothing. Product and architecture decisions stay in the owning documents: the plan or design documents, the specifications and the approved designs. A sprint task links to the record that owns its outcome, and closing the task does not change that record's status by itself.
 
@@ -42,11 +42,21 @@ Progress is appended to the task's own bullet as dated notes, and the plan text 
 - **Strikethrough.** A done task is wrapped in `~~ ~~` from its id up to the `Done` note, which stays outside so the outcome is readable, for example `- [x] ~~**E1** (Agent) Task. Done when: outcome.~~ Done YYYY-MM-DD as <gap id>: …`. A task that is not done is never struck through, and a parent is struck only when the parent itself is done.
 - `Not done: …, carried in <where>.` names any remainder and the place it now lives.
 
+## Change log
+
+`SPRINT-YYYY-MM-DD-LOG.md` records what changed in the code and why, so the plan file stays a plan. It has three sections, in this order:
+
+- **Snapshot:** a table of each engineering task's current state and where it lives (branch, head commit, PR), rewritten in place.
+- **Files changed:** every file the sprint's commits touched, sorted by path, with the ids of the tasks that touched it. Built from git.
+- **Entries:** newest first, one per commit or small group of commits: `### HH:MM · E4 · c70e0c2c · headline`, then a `What:` line and a `Why:` line. HH:MM is the commit time from `git log`, never an estimate.
+
+The log is updated after each commit for a sprint task. Decisions and progress notes belong in the sprint file, not the log. Agents in a parallel wave report their entries rather than editing the log.
+
 ## Parallel plan
 
 - **Two tasks share a wave only if** neither depends on the other, their `Touches:` do not overlap (shared lockfiles, migrations, schema, generated files, config and document rows count as overlap), and neither's done-when needs the other's output.
 - **Waves.** Wave 1 starts together. Later waves start after the earlier wave has merged. Each wave states its merge order. Tasks that cannot share a wave are listed as `Serial` with the reason, and tasks waiting on a decision as `Blocked`.
-- **One agent per task, one worktree per agent.** An agent stays inside its task's `Touches:` and does not edit the sprint file. It reports its `Done` note, and whoever merges the wave ticks the box.
+- **One agent per task, one worktree per agent.** An agent stays inside its task's `Touches:` and does not edit the sprint file. It reports its `Done` note and log entries, and whoever merges the wave ticks the box and updates the log.
 - **The plan is a schedule, not a history.** Edit it in place as tasks finish or are added.
 
 ## Decisions

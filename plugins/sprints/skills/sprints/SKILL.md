@@ -1,6 +1,6 @@
 ---
 name: sprints
-description: Sprint planning records in docs/sprints/ - a sprint is a work period the user opens and closes ad hoc, holding the loosely grouped tasks they want done in it, with engineering tasks sorted into waves that can run in parallel across multiple agents. Use when the user asks to set up sprints, open or plan a sprint, close a sprint, add a task, record a decision, write a retrospective, or work out which tasks can run in parallel. Also use without being asked - at the start of any dev task, check the open sprint to see if the work maps to a task; when a task finishes, tick it and add its done note; when work turns up a new task, decision or blocker, record it in the open sprint.
+description: Sprint planning records in docs/sprints/ - a sprint is a work period the user opens and closes ad hoc, holding the loosely grouped tasks they want done in it, with engineering tasks sorted into waves that can run in parallel across multiple agents. Use when the user asks to set up sprints, open or plan a sprint, close a sprint, add a task, record a decision, write a retrospective, or work out which tasks can run in parallel. Also use without being asked - at the start of any dev task, check the open sprint to see if the work maps to a task; when a task finishes, tick it and add its done note; after each commit for a sprint task, add an entry to the sprint's change log; when work turns up a new task, decision or blocker, record it in the open sprint.
 ---
 
 # Sprints
@@ -9,11 +9,13 @@ A sprint is a work period the user defines: it opens when they say so and closes
 
 A project keeps one markdown file per sprint in `docs/sprints/`, named by the date the sprint opens: `SPRINT-YYYY-MM-DD.md`, with `# Sprint YYYY-MM-DD` as its title. Sprint files are planning records and decide nothing. Decisions stay in the project's plan, design, spec and TODO documents, and a sprint task links to the record that owns its outcome.
 
+Each sprint also has a change log beside it, `SPRINT-YYYY-MM-DD-LOG.md`, recording what changed in the code and why (see "Sprint log").
+
 If the project's `docs/sprints/README.md` disagrees with this skill, follow the README for that project and mention the difference to the user once.
 
 ## Which sprint is open
 
-- The open sprint is the newest file whose `Retrospective` still reads "Filled in when the sprint closes." (or the older "Filled in at the end of the week.").
+- The open sprint is the newest `SPRINT-YYYY-MM-DD.md` file (not a `-LOG.md` file) whose `Retrospective` still reads "Filled in when the sprint closes." (or the older "Filled in at the end of the week.").
 - If more than one file is open, the newest is current. Tell the user once that the older one was never closed, and offer to close it.
 - If no sprint is open, do not create one unprompted. Tell the user once and offer to open one.
 
@@ -24,7 +26,7 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 1. Read the project's planning sources first: `README.md`, `CLAUDE.md`/`AGENTS.md`, any engineering guide, plan, roadmap, TODO, design or spec docs, and the last few weeks of `git log`. Identify the owning documents that tasks will link to, and any gap or issue ids those documents use (such as `ADAPTERS-V1-03`).
 2. Pick the tracks. The default is two: a non-engineering track and an Engineering track. Call the first Business for a company with customers, or Product for a solo product (practice, user feedback, content). Ask only if it is genuinely unclear.
 3. Write `docs/sprints/README.md` from [readme-template.md](readme-template.md), substituting the track names, owning documents and project rules. Keep links relative and correct.
-4. Open the first sprint from [sprint-template.md](sprint-template.md) (see "Opening a sprint").
+4. Open the first sprint from [sprint-template.md](sprint-template.md), with its log from [log-template.md](log-template.md) (see "Opening a sprint").
 5. Add this line to the project's agent instructions file (`CLAUDE.md` for Claude Code, `AGENTS.md` for Codex; update whichever exist, or create the one for the agent you are running in if neither does), so future sessions pick up sprints unprompted:
    `Sprints: plans live in docs/sprints/ (see its README). Use the sprints skill: check the open sprint before starting work and update it as tasks finish.`
    If the project's engineering guide lists where documents live, add the sprints directory there too.
@@ -41,6 +43,7 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 - **Must versus stretch:** a must task fits inside the period with the people available. Split a large task and move the remainder to stretch or a later sprint. When the order of the must tasks matters, say so in the task, for example "Ordered last: if the period runs out it carries over rather than compressing E10."
 - **Carry-over:** list every unfinished task from the previous sprint (see "Carry-over").
 - **Parallel plan:** once the engineering tasks are written, sort them into waves (see "Parallel plan").
+- **Log:** create `SPRINT-YYYY-MM-DD-LOG.md` from [log-template.md](log-template.md) with the same date, linking the plan. Fill the Snapshot with every engineering task as `Not started`, leave Files changed and Entries empty, and delete the template's example rows.
 - After writing, show the user the goal and the must tasks in a few lines. The plan is a draft for them to change.
 
 ## Task format
@@ -103,7 +106,7 @@ The `## Parallel plan` section sits after the Engineering track and says which e
 - If a task's real footprint grows past its `Touches:`, update `Touches:` and re-check its wave.
 - Stretch tasks join the plan only once the must tasks are done or blocked, per the stretch rule.
 
-**Handing a wave to agents:** when the user asks to run a wave, start one agent per task in a single step, each in its own worktree. Give each agent its task line, the done-when, the owning documents to read and its `Touches:` boundary, and tell it to stay inside that boundary, not to edit the sprint file, and to report its `Done` note. If an agent finds it must change a file outside its `Touches:`, it stops and reports rather than editing it. If it discovers a new requirement, it reports what it is, why, and which task it must precede, and the coordinating session records it as a sub-task of that agent's task; sub-tasks under different parents cannot collide on ids. Do not launch agents unless asked.
+**Handing a wave to agents:** when the user asks to run a wave, start one agent per task in a single step, each in its own worktree. Give each agent its task line, the done-when, the owning documents to read and its `Touches:` boundary, and tell it to stay inside that boundary, not to edit the sprint file, and to report its `Done` note. Tell it the same about the sprint log: it does not edit the log and instead reports a ready-to-paste log entry for each of its commits. If an agent finds it must change a file outside its `Touches:`, it stops and reports rather than editing it. If it discovers a new requirement, it reports what it is, why, and which task it must precede, and the coordinating session records it as a sub-task of that agent's task; sub-tasks under different parents cannot collide on ids. Do not launch agents unless asked.
 
 ## Recording progress (the status trail)
 
@@ -123,6 +126,29 @@ The task text is the plan. Progress is appended to the end of the same bullet as
 - Tick the box and strike the task through in the same commit as the work that met the done-when. Never tick or strike a task whose done-when is not actually met.
 - **Exception, tasks run in a parallel wave:** the agent does not edit the sprint file, because agents editing adjacent bullets of one file conflict on merge. It ends its work with the ready-to-paste `Done` (or `Status`, `Not done`) note in its report or PR description, and whoever merges the wave, or the coordinating session, ticks the box, strikes the task through and appends the note once the work has merged.
 - Never change an owning document's status just because a task closed. Update the owning document as the task says, then tick.
+
+## Sprint log
+
+The log, `SPRINT-YYYY-MM-DD-LOG.md` beside the sprint file, is the record of what changed in the code and why. The plan says what was meant to happen and how far each task got; the log says what each commit did. Decisions and progress notes belong in the plan, not the log. Start it from [log-template.md](log-template.md). If an open sprint has no log, create it the first time you commit work for one of its tasks, backfilling entries for the sprint's earlier commits from `git log`.
+
+It has a short header and three sections, in this order:
+
+- **Header:** the title `# Sprint YYYY-MM-DD — change log`, the paragraph stating the log's rules (newest first, one entry per commit or small group, times from git, decisions and progress belong in the plan) with a link to the plan, and the entry format in a code block.
+- **Snapshot:** a table with one row per engineering task that has started or is planned: `| Task | State | Where |`. State is short and current (`Not started`, `In progress`, `Live QA in progress; fixes committed`, `Done`, `Done, merged`). Where is the branch and the head commit for that task, and the PR if there is one or `no PR yet`. Rewrite rows in place; this section is current state, not history.
+- **Files changed:** every file the sprint's commits have added, changed or removed, one bullet per file, sorted by path, with the ids of the tasks whose commits touched it: ``- `src/harness/ask.ts` — E1, E4``. Mark removed files `(deleted)` and renamed files `old → new`. Build it from git, never from memory: `git log --name-status --format= <commits>` over the commits in the Entries. Keep it current in the same edit as each new entry.
+- **Entries:** newest first, one per commit or small group of commits for the same task:
+
+  ```
+  ### HH:MM · E4 · c70e0c2c · one place for an open question
+  - What: the change, in a sentence.
+  - Why: the reason, in a sentence.
+  ```
+
+  The time is the commit time from `git log --date=format:%H:%M`, never an estimate. Group commits by listing their short hashes comma-separated, and use the newest commit's time. The headline is a few lowercase words naming the outcome, not the mechanics. What says what changed in terms a reviewer would recognise (names of routes, tools, components); Why gives the reason, including the QA finding or review comment that prompted it.
+
+**When to write it:** after each commit for a sprint task, add its entry, update that task's Snapshot row and update Files changed, in the next commit (amending would change the hash the entry names). Commits that match no sprint task are left out. A commit hash is only known after committing, so the log update always trails the work by one commit at most; never leave it for later in the session.
+
+**Parallel waves:** agents in a wave do not edit the log, for the same reason they do not edit the sprint file. Each reports its log entries, and whoever merges the wave adds them, re-sorts Entries by time and updates the Snapshot and Files changed.
 
 ## Decisions needed
 
@@ -146,6 +172,7 @@ List only choices the user must make that block a task.
 
 - Before a dev task, if `docs/sprints/` exists, read the open sprint. If the work matches a task, mention its id briefly and use its done-when as the finish line. If the user says the session is one agent of a parallel wave, work only that task, stay inside its `Touches:`, and leave the sprint file to the coordinating session.
 - When work completes a task, record it per "Recording progress" in the same commit.
+- After each commit for a sprint task, update the sprint log per "Sprint log".
 - When work reveals a new blocker or user decision, add it to Decisions needed. When it reveals a must-fix defect or new significant work, add a task with an `Added` note, numbered by dependency order: a sub-task of the task being worked if it must be done before moving on (`E3.1`, not `E11`). Do this rather than only mentioning it in chat.
 - Work that matches no task is fine; do not add every small fix. Add a task only when the user would want to see it on the period's plan.
 - When a decision is resolved in conversation, update its entry in the same turn.
@@ -154,7 +181,7 @@ List only choices the user must make that block a task.
 
 When the user asks to close the sprint, or opens a new one while the previous retrospective is empty:
 
-1. Build the retrospective from the file's own status trail and the commits: short, factual bullets. **Shipped:** task ids, with gap ids or commits. **Slipped:** task ids, with why. **Changed mid-sprint:** tasks added and decisions taken. **Changes next time:** what to do differently, including any merge conflict a parallel wave hit that a better `Touches:` would have predicted.
+1. Bring the sprint log up to date (every task's final Snapshot state, all entries, Files changed), then build the retrospective from the file's own status trail and the log: short, factual bullets. **Shipped:** task ids, with gap ids or commits. **Slipped:** task ids, with why. **Changed mid-sprint:** tasks added and decisions taken. **Changes next time:** what to do differently, including any merge conflict a parallel wave hit that a better `Touches:` would have predicted.
 2. Move lessons that change how the project works into the owning document (engineering guide, design, spec), not just the retrospective.
 3. Carry unfinished tasks into the new sprint's Carry-over.
 4. Add the actual close date under Dates: `- Closed: YYYY-MM-DD.`
