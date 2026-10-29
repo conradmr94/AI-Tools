@@ -37,7 +37,12 @@ In this order, under these headings. Leave out a section that has nothing in it.
 
 ### In short
 
-Two to four plain sentences, never more: count them before replying. Say what the change does and why, in terms of behavior, not files. The first sentence is the main change; the rest cover only the side effects that matter most. Anything else goes in the sections below. Someone who reads only this knows what the change is. End with one short line naming what was compared: `Compared: rate-limit vs main, 2 commits, no uncommitted work.`
+Two to four plain sentences, never more: count them before replying. Say what the change does and why, in terms of behavior, not files. The first sentence is the main change; the rest cover only the side effects that matter most. Anything else goes in the sections below. Someone who reads only this knows what the change is. Join related facts into one sentence rather than adding another, as in this three-sentence example:
+
+```
+`ApiClient` now rate-limits itself: every `get` takes a token from a token-bucket `RateLimiter` and raises `RateLimited` at once when none is left. The same commit gives every request a fixed 30-second timeout and turns any transport error into `None`. A separate commit renames `utils.py` to `urls.py`.
+```
+ End with one short line naming what was compared: `Compared: rate-limit vs main, 2 commits, no uncommitted work.`
 
 ### Read these
 
