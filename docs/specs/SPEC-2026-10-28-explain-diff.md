@@ -67,7 +67,7 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S1a Fixture** — `evals/fixture/build.sh`, which builds the `feature`, `spec`, `large` and `empty` fixture repos. Landed in `588d77f`.
 - [x] **S1b Cases** — cases T1–T10 with their graders and per-case scaffold scripts, plus a stub `SKILL.md` that does nothing, so every case fails on behavior, not setup. Landed in `5a25a12`; all red except the T6 and T10 guards.
 - [x] **S2 Core walkthrough** — `SKILL.md`: target resolution, *In short*, *Read these*, *Skim or skip*, *Decisions*, the large-diff rule, the empty case and the no-files rule. Turns T1–T4, T6, T8, T9 and T10 green. Landed in `eb44456`; those eight green, T5 and T7 red as expected.
-- [ ] **S3 Spec check and questions** — *Against the spec* and *Check your understanding*. Turns T5 and T7 green.
+- [x] **S3 Spec check and questions** — *Against the spec* and *Check your understanding*. Turns T5 and T7 green. Landed in `4047266`; T1–T10 green.
 - [ ] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T10 stay green.
 
 ## Open questions

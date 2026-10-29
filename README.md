@@ -8,6 +8,7 @@ My personal grab bag of [Claude Code](https://claude.com/claude-code) and [Codex
 |---|---|
 | [`explain-repo`](plugins/explain-repo/skills/explain-repo/SKILL.md) | Turns any codebase into two browsable HTML docs — how the product works, how the code works — so nobody has to spend 45 minutes grepping around to get oriented. |
 | [`sprints`](plugins/sprints/skills/sprints/SKILL.md) | Sprint planning records in `docs/sprints/` — open and close sprints ad hoc, track tasks with a dated status trail, sort engineering tasks into waves that can run in parallel across multiple agents, log decisions, and write retrospectives. Checks the open sprint before dev work and updates it as tasks finish. |
+| [`explain-diff`](plugins/explain-diff/skills/explain-diff/SKILL.md) | A short guided read of a code change, in chat: what it does, the lines worth reading in order, what to skim, how it compares with its spec, and the decisions in it nobody asked for. For understanding a change without reading the whole diff cold. Writes no files. |
 
 More to come as I need them.
 
@@ -21,6 +22,7 @@ This repo doubles as a plugin marketplace for both Claude Code and Codex. Each s
 claude plugin marketplace add conradmr94/AI-Tools
 claude plugin install explain-repo@ai-tools
 claude plugin install sprints@ai-tools
+claude plugin install explain-diff@ai-tools
 ```
 
 **Codex**
@@ -29,6 +31,7 @@ claude plugin install sprints@ai-tools
 codex plugin marketplace add conradmr94/AI-Tools
 codex plugin add explain-repo@ai-tools
 codex plugin add sprints@ai-tools
+codex plugin add explain-diff@ai-tools
 ```
 
 (Repo's currently private — ping me for access.)

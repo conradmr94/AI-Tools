@@ -1,0 +1,18 @@
+{
+  "name": "explain-diff",
+  "version": "1.0.0",
+  "description": "Walks you through a code change as a short guided read: what it does, the lines worth reading in order, what to skim, how it compares with its spec, and the decisions nobody asked for.",
+  "author": {
+    "name": "matt"
+  },
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Explain Diff",
+    "shortDescription": "A short guided read of a code change",
+    "developerName": "matt",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Walk me through what changed on this branch"
+    ]
+  }
+}
