@@ -1,6 +1,6 @@
 # Spec: explain-diff skill
 
-- Status: Approved 2026-10-28
+- Status: Done 2026-10-28
 - Task: None. This repo has no sprints; the stage comes from the SDLC plan agreed in chat on 2026-10-28.
 - Branch: `explain-diff`, from `main` after PR #4 merges
 
@@ -69,7 +69,7 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S2 Core walkthrough** — `SKILL.md`: target resolution, *In short*, *Read these*, *Skim or skip*, *Decisions*, the large-diff rule, the empty case and the no-files rule. Turns T1–T4, T6, T8, T9 and T10 green. Landed in `eb44456`; those eight green, T5 and T7 red as expected.
 - [x] **S3 Spec check and questions** — *Against the spec* and *Check your understanding*. Turns T5 and T7 green. Landed in `4047266`; T1–T10 green.
 - [x] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T10 stay green. Landed in `7df4b63`; the `--runs 3` run then showed T1 at 1/3, T3 at 2/3 and T8 at 1/3.
-- [ ] **S5 Steadier output** — the reply opens with *In short* (or the large-change warning) with no preamble, the compared refs move to the end of *In short*, *In short* is held to four sentences, and each *Read these* entry and commit line is one sentence. Brings the skill back in line with the Interfaces section, which S2 had drifted from. Turns T1, T3 and T8 steady: each 3/3.
+- [x] **S5 Steadier output** — the reply opens with *In short* (or the large-change warning) with no preamble, the compared refs move to the end of *In short*, *In short* is held to four sentences, and each *Read these* entry and commit line is one sentence. Brings the skill back in line with the Interfaces section, which S2 had drifted from. Turns T1, T3 and T8 steady: each 3/3. Landed in `b57c2d7`, `cb8606a` and `ba82da9` (the last makes *Decisions* locate a hard-coded value where it is defined, after T4 missed once); final `--runs 3` run 29/30, with T4's one miss fixed and re-checked 3/3.
 
 ## Open questions
 
