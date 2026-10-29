@@ -7,7 +7,7 @@ description: Walk the user through a code change as a short guided read in chat 
 
 Turn a change into a short read that lets the user understand it without going through the whole diff line by line. The reply is the product: it lives in chat and is never saved to a file.
 
-This skill only reads. Do not write, edit or create files, and run only git commands that read (`diff`, `log`, `show`, `status`, `merge-base`, `rev-parse`, `symbolic-ref`, `ls-files`). Never check out, stash, reset, commit or otherwise change the repo to look at a change: read other revisions with `git show <rev>:<path>`.
+This skill only reads. Do not write, edit or create files, and run only git commands that read (`diff`, `log`, `show`, `status`, `merge-base`, `rev-parse`, `symbolic-ref`, `ls-files`). Never check out, stash, reset, commit or otherwise change the repo to look at a change: read other revisions with `git show <rev>:<path>`. The one other command it runs is a matching spec's test command (see "Against the spec").
 
 ## Picking the change
 
@@ -54,6 +54,17 @@ Order for understanding, not by file name: start where the new behavior is decid
 
 The noise, grouped, one line per group, with enough to trust it is noise: `requirements.lock — 40 hash lines regenerated; no version changes.` or `utils.py → urls.py — renamed; contents unchanged, two imports updated.`
 
+### Against the spec
+
+Only when the change has a spec: a `SPEC-*.md` in `docs/specs/` (or `docs/specs/tasks/`) whose `Branch:` line names the branch being explained, or the spec an `S<n>` target came from. Read the spec at the target revision, then report:
+
+- **Tests:** run the spec's `Run:` command once, unless the user said not to, and give each spec test id with `pass`, `fail` or `not run`, matched by the test name the spec gives it. If the command fails to start, mark them all `not run` and say why in one line. Do not fix failing tests or code; report them.
+- **Outside the scope:** every changed file that the spec's `Touches:` does not cover (a directory covers what is inside it), and any changed file its `Does not touch:` names.
+- **Interfaces:** every signature, route, type or config key in the change that differs from the spec's Interfaces section, giving both: ``spec: `RateLimiter(max_per_second: int)`; code: `RateLimiter(rate, burst, clock)`.``
+- **Unrecorded departures:** which of the above the spec's Deviations section already records, and which it does not. Only the unrecorded ones need the user's attention, so say so plainly.
+
+If the change has no spec, leave this section out.
+
 ### Decisions you didn't ask for
 
 Choices the change makes that nothing the user asked for decided. Compare against what you know of the request: this conversation, the commit messages and any task or spec the change belongs to. Look for:
@@ -66,6 +77,17 @@ Choices the change makes that nothing the user asked for decided. Compare agains
 - anything security- or data-sensitive
 
 Each entry gives the location, what the code does, and what it means for the user: ``client.py:18 — `except Exception: return None` turns every transport error into a `None` result, so callers can no longer tell "not found" from "network down".`` If there are none, leave the section out; do not invent concerns.
+
+### Check your understanding
+
+Two to four questions about what the change does, the kind a reviewer should be able to answer after reading it: what happens in an edge case, why a choice was made, what a caller now has to do differently. Put each answer in a collapsed block:
+
+```
+1. What does `ApiClient.get` return when the transport raises?
+   <details><summary>Answer</summary>`None`: `client.py:18` catches every exception, so callers can't tell a failure from an empty result.</details>
+```
+
+These are for the reader's own benefit. Never say that merging, approving or carrying on depends on answering them, and do not ask the user to answer. Leave the section out of the short reply for a large change.
 
 ## Style
 

@@ -66,7 +66,7 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 
 - [x] **S1a Fixture** — `evals/fixture/build.sh`, which builds the `feature`, `spec`, `large` and `empty` fixture repos. Landed in `588d77f`.
 - [x] **S1b Cases** — cases T1–T10 with their graders and per-case scaffold scripts, plus a stub `SKILL.md` that does nothing, so every case fails on behavior, not setup. Landed in `5a25a12`; all red except the T6 and T10 guards.
-- [ ] **S2 Core walkthrough** — `SKILL.md`: target resolution, *In short*, *Read these*, *Skim or skip*, *Decisions*, the large-diff rule, the empty case and the no-files rule. Turns T1–T4, T6, T8, T9 and T10 green.
+- [x] **S2 Core walkthrough** — `SKILL.md`: target resolution, *In short*, *Read these*, *Skim or skip*, *Decisions*, the large-diff rule, the empty case and the no-files rule. Turns T1–T4, T6, T8, T9 and T10 green. Landed in `eb44456`; those eight green, T5 and T7 red as expected.
 - [ ] **S3 Spec check and questions** — *Against the spec* and *Check your understanding*. Turns T5 and T7 green.
 - [ ] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T10 stay green.
 
@@ -86,4 +86,5 @@ All resolved by Owner on 2026-10-28 in chat, as recommended:
 - **T6 reworded** to say how it is checked: through the agent's tool calls, since the runner can see created files but not edits to existing ones. Approved by Owner 2026-10-28 in chat.
 - **T6 and T10 pass against the stub.** Base Claude, with no guidance, already writes nothing and already says "nothing to explain" on an empty branch, so these can't fail first. They are kept as regression guards that must stay green. Approved by Owner 2026-10-28 in chat.
 - **T6 grader pattern fixed.** Its git check matched the read-only `git merge-base` as `git merge`, and missed git run through a shell variable (`$G commit`). The pattern is now `(\bgit|\$\{?\w+\}?)\s+(add|…|push)(?![\w-])`; T6's sentence is unchanged. Approved by Owner 2026-10-28 in chat.
+- **Fixture lockfile change made benign.** The branch's `requirements.lock` changed every hash while keeping every version, which the skill rightly flagged as a supply-chain risk rather than noise, failing T2. The fixture now regenerates the lock with a new header date and a different line order, with the same packages, versions and hashes. The skill still flags hash-only changes. Approved by Owner 2026-10-28 in chat.
 - **Branch from `main` before PR #4 merged.** This work does not depend on the spec skill's code, so the branch starts from `main` as Q1 asked, without waiting for the merge.
