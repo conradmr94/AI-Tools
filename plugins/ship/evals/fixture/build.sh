@@ -11,11 +11,12 @@
 #   build.sh on-main   the same two commits made on main instead of a branch
 #   build.sh dirty     as ready, plus an uncommitted edit to client.py
 #   build.sh no-spec   as ready, without the spec
+#   build.sh docs      as ready, plus explain-repo docs on main checked against main's first commit
 #
 # The checkout is left on `rate-limit`, or on main for on-main.
 set -euo pipefail
 
-variant="${1:?usage: build.sh ready|red|on-main|dirty|no-spec}"
+variant="${1:?usage: build.sh ready|red|on-main|dirty|no-spec|docs}"
 
 git init -q -b main .
 git config user.name "Fixture"
@@ -68,6 +69,15 @@ EOF
 
 git add -A
 git commit -q -m "API client"
+
+if [ "$variant" = "docs" ]; then
+  mkdir -p docs/architecture/data
+  cat > docs/architecture/data/doc.js <<DOC
+window.DOC = { title: "How the code works", revision: "$(git rev-parse --short HEAD)" };
+DOC
+  git add -A
+  git commit -q -m "Architecture docs"
+fi
 git init -q --bare .git/origin.git
 git remote add origin "$PWD/.git/origin.git"
 # Run origin's helpers from git's own exec path, with that git first on PATH and a temp

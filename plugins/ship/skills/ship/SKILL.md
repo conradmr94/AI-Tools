@@ -51,6 +51,7 @@ Reply with:
 - the PR link; or, if the push or `gh` failed, the reason in one line and then the title and body in a fenced block, ready to paste once the problem is fixed, so the write-up is never lost
 - each check and its result, naming the test commands you ran
 - anything left for the user: manual checks from the spec's "Not covered", a draft to mark ready, an uncommitted file they chose to keep out
+- when the repo has explain-repo docs (`docs/architecture/`, `docs/product/` or `docs/data-model/` with a `data/doc.js`): how far behind they are, as the number of commits since each doc's `revision` that change files outside the docs (`git log --oneline <revision>..HEAD -- . ':!docs/architecture' ':!docs/product' ':!docs/data-model' ':!docs/viewer'`), and a suggestion to refresh them with explain-repo once this PR is merged. Leave it out when they are up to date. This is a note, never a failed check.
 
 Do not wait for, poll or watch CI after opening the PR.
 

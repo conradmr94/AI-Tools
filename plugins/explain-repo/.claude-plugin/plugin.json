@@ -1,0 +1,8 @@
+{
+  "name": "explain-repo",
+  "version": "1.0.1",
+  "description": "Generate a living, browsable architecture — two interactive HTML documents (how the product works, how the code works) for the current repository.",
+  "author": {
+    "name": "matt"
+  }
+}
