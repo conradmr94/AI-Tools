@@ -37,6 +37,14 @@
       "version": "1.0.0",
       "strict": false,
       "skills": ["./skills/explain-diff"]
+    },
+    {
+      "name": "ship",
+      "description": "Takes a finished feature branch to an open pull request: checks it is ready, writes the PR description from the spec and commits, pushes the branch and opens the PR. Never merges or force-pushes.",
+      "source": "./plugins/ship",
+      "version": "1.0.0",
+      "strict": false,
+      "skills": ["./skills/ship"]
     }
   ]
 }
