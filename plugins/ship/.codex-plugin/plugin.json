@@ -1,0 +1,18 @@
+{
+  "name": "ship",
+  "version": "1.0.0",
+  "description": "Takes a finished feature branch to an open pull request: checks it is ready, writes the PR description from the spec and commits, pushes the branch and opens the PR. Never merges or force-pushes.",
+  "author": {
+    "name": "matt"
+  },
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Ship",
+    "shortDescription": "Check a branch, write the PR and open it",
+    "developerName": "matt",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Ship this branch"
+    ]
+  }
+}
