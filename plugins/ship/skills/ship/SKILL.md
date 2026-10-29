@@ -56,4 +56,15 @@ Do not wait for, poll or watch CI after opening the PR.
 
 ## The PR body
 
-Keep it short: a reviewer should get the change from it in a minute. Start from what the spec and the commits say, not from a fresh reading of the code.
+Keep it short: a reviewer should get the change from it in a minute. Start from what the spec and the commits say, not from a fresh reading of the code. Use these sections, in this order, as `##` headings, and leave out any that would be empty:
+
+- **What** — what the change does, in a few plain sentences: from the spec's Goal when there is a spec, otherwise from the commits.
+- **Why** — the reason, from the spec, its task or the commit messages. One or two sentences.
+- **Tests** — the commands you ran in the ready checks and their results. With a spec, list every spec test id with its sentence shortened and its result (`- **T1** third call in a second is refused: pass`). Then the spec's "Not covered" items, as what the reviewer should check by hand. Without a spec, name the project's test command and its result.
+- **Deviations** — the spec's Deviations section, one line each, plus any changed file the spec's `Touches:` does not cover. Leave out without a spec.
+- **Commits** — one line per commit on the branch, oldest first: short hash, subject, and what it changed and why in one sentence. For a sprint task, link the task's entries in the sprint log instead, since they already say this.
+- **Merging** — open PRs that change any of the same files (`gh pr list --json number,title,files`), so the reviewer expects the conflict. Leave out when there are none or `gh` cannot tell.
+
+Never add AI attribution: no "Generated with Claude Code" line, no `Co-Authored-By` trailer for an AI, no mention of which agent wrote it. The user's own rules about PR descriptions come first.
+
+The title is the change in a few words, in the imperative, like a good commit subject: `Rate-limit the API client`.
