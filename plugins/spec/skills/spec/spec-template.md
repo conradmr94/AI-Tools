@@ -37,11 +37,13 @@ Not covered by automated tests:
 
 ## Slices
 
-One commit each, on the branch above, in this order. Budget: about 300 changed lines per slice, not counting lockfiles, generated files or snapshots.
+One commit each, on the branch above, in this order. Budget: about 300 changed lines per slice, not counting lockfiles, generated files or snapshots. Each is ticked with its commit once it lands.
 
-1. **S1 Tests** — writes T1–T2. Each fails because the behavior does not exist yet.
-2. **S2 <outcome>** — what it adds. Turns T1 green.
-3. **S3 <outcome>** — what it adds. Turns T2 green.
+- [ ] **S1 Tests** — writes T1–T2. Each fails because the behavior does not exist yet.
+- [ ] **S2 <outcome>** — what it adds. Turns T1 green.
+- [ ] **S3 <outcome>** — what it adds. Turns T2 green.
+
+A landed slice reads: ``- [x] **S2 <outcome>** — what it adds. Turns T1 green. Landed in `abc1234`; T1 green, T2 red as expected.``
 
 ## Open questions
 
@@ -50,7 +52,3 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 ## Deviations
 
 Where the work departed from this spec, and why. Filled in during the work. "None." if there were none.
-
-## Progress
-
-- S1 `abc1234` — tests written; T1 and T2 fail as expected.
