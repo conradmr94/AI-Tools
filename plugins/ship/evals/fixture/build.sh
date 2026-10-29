@@ -70,6 +70,18 @@ git add -A
 git commit -q -m "API client"
 git init -q --bare .git/origin.git
 git remote add origin "$PWD/.git/origin.git"
+# Run origin's helpers from git's own exec path, with that git first on PATH and a temp
+# directory inside the repo: the eval sandbox blocks the /usr/bin git shim and the system
+# temp folder, which the receiving side of a local push would otherwise use.
+mkdir -p .git/tmp
+for helper in receive-pack upload-pack; do
+  cat > ".git/$helper.sh" <<EOF
+#!/bin/sh
+PATH="$(dirname "$(command -v git)"):\$PATH" TMPDIR="$PWD/.git/tmp" exec "$(git --exec-path)/git-$helper" "\$@"
+EOF
+  chmod +x ".git/$helper.sh"
+  git config "remote.origin.${helper%-pack}pack" "$PWD/.git/$helper.sh"
+done
 git push -q -u origin main
 
 if [ "$variant" != "on-main" ]; then
