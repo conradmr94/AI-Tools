@@ -1,6 +1,74 @@
 ---
 name: explain-diff
-description: Placeholder for the explain-diff skill; not implemented yet.
+description: Walk the user through a code change as a short guided read in chat - what it does, the lines worth reading in order, what to skim, and the decisions in it that nobody asked for - so they understand it without reading the whole diff cold. Works on the current branch, uncommitted work, a commit, a range, another branch, or one slice of a spec. Use when the user asks to explain, walk through or summarize a diff, branch, commit, PR or change, asks "what changed?" or "what did you do?", or wants to understand a change before merging it. Read-only; writes no files.
 ---
 
-Not implemented yet. Reply only: "explain-diff is not implemented yet."
+# explain-diff
+
+Turn a change into a short read that lets the user understand it without going through the whole diff line by line. The reply is the product: it lives in chat and is never saved to a file.
+
+This skill only reads. Do not write, edit or create files, and run only git commands that read (`diff`, `log`, `show`, `status`, `merge-base`, `rev-parse`, `symbolic-ref`, `ls-files`). Never check out, stash, reset, commit or otherwise change the repo to look at a change: read other revisions with `git show <rev>:<path>`.
+
+## Picking the change
+
+The user names the change in words or as `/explain-diff [target]`:
+
+- **Nothing:** the current branch against its merge-base with the default branch, plus uncommitted and untracked work. The default branch is `origin/HEAD` if set, else `main`, else `master`. On the default branch itself, it is just the uncommitted work.
+- **A commit:** that commit against its parent.
+- **A range** `A..B`: exactly that range.
+- **A branch:** that branch against its merge-base with the default branch.
+- **`S<n>`:** that slice of the spec in `docs/specs/` that matches the current branch. Its tick in the spec's Slices list names its commit. If the slice is not ticked yet, say it has not landed and stop.
+
+Say in one line which change you are explaining: `rate-limit` vs `main` (2 commits, plus uncommitted work), for example.
+
+## Reading the change
+
+1. Get the shape: `git log --oneline <base>..<target>`, `git diff -M --stat <base> <target>` (plus `git diff -M --stat HEAD` and `git status --short` for uncommitted and untracked work).
+2. Sort the files into **signal** (behavior a reader must understand) and **noise**: lockfiles, generated or vendored files, snapshots, pure renames and moves (a rename with an import fix is still a rename), formatting-only and whitespace-only edits, and mechanical updates that follow from another change, such as call sites adjusted to a new signature.
+3. Read the full diff of every signal file, and enough of the surrounding code to know what each hunk does. Read noise files only far enough to confirm they are noise.
+
+**Nothing changed:** if the change is empty, say there is nothing to explain, name the base and target you compared, and stop. Never describe existing code as if it were part of a change.
+
+**A large change:** count meaningful lines as the lines added and removed in signal files. Over about 300, the reply opens with that, before any walkthrough: how big it is, how many commits, and an offer to go through it commit by commit (or slice by slice, when it has a spec). Then give only *In short* and one line per commit, and stop. Do the full walkthrough only if the user asks for the whole change at once.
+
+## The reply
+
+In this order, under these headings. Leave out a section that has nothing in it.
+
+### In short
+
+Two to four plain sentences: what the change does and why, in terms of behavior, not files. Someone who reads only this knows what the change is.
+
+### Read these
+
+The lines that matter, in reading order, at most about seven entries. Each is `path:start-end` (line numbers in the new version of the file) and one line on what it is and why it matters:
+
+```
+1. `ratelimit.py:8-24` — the token bucket; `acquire` is the whole rule.
+2. `client.py:15-20` — every request now takes a token first.
+```
+
+Order for understanding, not by file name: start where the new behavior is decided, then the code it calls, then where it is wired in, then the tests that prove it. Check every line range against the file before giving it.
+
+### Skim or skip
+
+The noise, grouped, one line per group, with enough to trust it is noise: `requirements.lock — 40 hash lines regenerated; no version changes.` or `utils.py → urls.py — renamed; contents unchanged, two imports updated.`
+
+### Decisions you didn't ask for
+
+Choices the change makes that nothing the user asked for decided. Compare against what you know of the request: this conversation, the commit messages and any task or spec the change belongs to. Look for:
+
+- hard-coded values and defaults (timeouts, limits, sizes, retry counts)
+- error handling that hides, swallows or reshapes failures
+- new dependencies, or new uses of the network, filesystem or clock
+- changed signatures or behavior that existing callers will notice
+- removed checks, validation or tests
+- anything security- or data-sensitive
+
+Each entry gives the location, what the code does, and what it means for the user: ``client.py:18 — `except Exception: return None` turns every transport error into a `None` result, so callers can no longer tell "not found" from "network down".`` If there are none, leave the section out; do not invent concerns.
+
+## Style
+
+- Say what the code does in plain words. Do not paste the diff back; quote a line only when the line itself is the point.
+- Be specific: names of functions, routes, files and values, never "updated some logic".
+- Keep the whole reply short enough to read in a couple of minutes. The point is that the user does not have to read the diff, not that they read a second, longer version of it.

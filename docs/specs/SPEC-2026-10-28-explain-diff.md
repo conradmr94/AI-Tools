@@ -64,8 +64,8 @@ Not covered by automated tests:
 
 One commit each, on the branch above, in this order. Budget: about 300 changed lines per slice, not counting lockfiles, generated files or snapshots.
 
-- [ ] **S1a Fixture** — `evals/fixture/build.sh`, which builds the `feature`, `spec`, `large` and `empty` fixture repos.
-- [ ] **S1b Cases** — cases T1–T10 with their graders and per-case scaffold scripts, plus a stub `SKILL.md` that does nothing, so every case fails on behavior, not setup.
+- [x] **S1a Fixture** — `evals/fixture/build.sh`, which builds the `feature`, `spec`, `large` and `empty` fixture repos. Landed in `588d77f`.
+- [x] **S1b Cases** — cases T1–T10 with their graders and per-case scaffold scripts, plus a stub `SKILL.md` that does nothing, so every case fails on behavior, not setup. Landed in `5a25a12`; all red except the T6 and T10 guards.
 - [ ] **S2 Core walkthrough** — `SKILL.md`: target resolution, *In short*, *Read these*, *Skim or skip*, *Decisions*, the large-diff rule, the empty case and the no-files rule. Turns T1–T4, T6, T8, T9 and T10 green.
 - [ ] **S3 Spec check and questions** — *Against the spec* and *Check your understanding*. Turns T5 and T7 green.
 - [ ] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T10 stay green.
@@ -81,8 +81,9 @@ All resolved by Owner on 2026-10-28 in chat, as recommended:
 ## Deviations
 
 - **Run command** gained `--ablation none` (no paid no-plugin baseline arm; it also keeps T9's skill-fired check scored), `--trust-plugin`, `--allow-tools Bash Write Edit` (the cases need git, and T6 needs Write and Edit available so it can fail), and output paths outside the repo so results are never committed. Found while writing S1; changes nothing approved.
-- **No plugin manifest in S1.** The eval runner resolves `plugins/explain-diff` from its `skills/` folder alone; the manifest arrives with registration in S4 as planned there.
+- **Plugin manifest.** S1b left out the manifest the approved S1 called for, wrongly concluding the runner didn't need one: without it the skill never loaded, so the S1 runs measured plain Claude with no skill at all. Every case still failed except the T6 and T10 guards, but T9 failed because no skill was installed, not because of the stub's description. S2 adds `plugins/explain-diff/.claude-plugin/plugin.json`, which the eval runner needs and which `.claude-plugin/marketplace.json` (`strict: false`) does not replace.
 - **S1 split into S1a and S1b**, because S1 came to about 500 lines.
 - **T6 reworded** to say how it is checked: through the agent's tool calls, since the runner can see created files but not edits to existing ones. Approved by Owner 2026-10-28 in chat.
 - **T6 and T10 pass against the stub.** Base Claude, with no guidance, already writes nothing and already says "nothing to explain" on an empty branch, so these can't fail first. They are kept as regression guards that must stay green. Approved by Owner 2026-10-28 in chat.
+- **T6 grader pattern fixed.** Its git check matched the read-only `git merge-base` as `git merge`, and missed git run through a shell variable (`$G commit`). The pattern is now `(\bgit|\$\{?\w+\}?)\s+(add|…|push)(?![\w-])`; T6's sentence is unchanged. Approved by Owner 2026-10-28 in chat.
 - **Branch from `main` before PR #4 merged.** This work does not depend on the spec skill's code, so the branch starts from `main` as Q1 asked, without waiting for the merge.

@@ -1,0 +1,8 @@
+{
+  "name": "explain-diff",
+  "version": "1.0.0",
+  "description": "Walks you through a code change as a short guided read: what it does, the lines worth reading in order, what to skim, how it compares with its spec, and the decisions nobody asked for.",
+  "author": {
+    "name": "matt"
+  }
+}
