@@ -29,6 +29,14 @@
       "version": "1.0.0",
       "strict": false,
       "skills": ["./skills/spec"]
+    },
+    {
+      "name": "explain-diff",
+      "description": "Walks you through a code change as a short guided read: what it does, the lines worth reading in order, what to skim, how it compares with its spec, and the decisions nobody asked for.",
+      "source": "./plugins/explain-diff",
+      "version": "1.0.0",
+      "strict": false,
+      "skills": ["./skills/explain-diff"]
     }
   ]
 }
