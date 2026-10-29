@@ -21,6 +21,14 @@
       "version": "1.0.4",
       "strict": false,
       "skills": ["./skills/sprints"]
+    },
+    {
+      "name": "spec",
+      "description": "Short task specs in docs/specs/ — goal, scope, interfaces, the tests that prove it works (written and approved before any code) and the small commits it lands in.",
+      "source": "./plugins/spec",
+      "version": "1.0.0",
+      "strict": false,
+      "skills": ["./skills/spec"]
     }
   ]
 }

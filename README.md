@@ -8,6 +8,7 @@ My personal grab bag of [Claude Code](https://claude.com/claude-code) and [Codex
 |---|---|
 | [`explain-repo`](plugins/explain-repo/skills/explain-repo/SKILL.md) | Turns any codebase into two browsable HTML docs — how the product works, how the code works — so nobody has to spend 45 minutes grepping around to get oriented. |
 | [`sprints`](plugins/sprints/skills/sprints/SKILL.md) | Sprint planning records in `docs/sprints/` — open and close sprints ad hoc, track tasks with a dated status trail, sort engineering tasks into waves that can run in parallel across multiple agents, log decisions, and write retrospectives. Checks the open sprint before dev work and updates it as tasks finish. |
+| [`spec`](plugins/spec/skills/spec/SKILL.md) | Short task specs in `docs/specs/` written before any code: goal, scope, interfaces, the tests that prove it works, and the small commits it lands in. You approve the spec, then the tests (written first and failing), and the code has to pass those tests unchanged. Keeps every change small enough to actually follow. |
 
 More to come as I need them.
 
@@ -21,6 +22,7 @@ This repo doubles as a plugin marketplace for both Claude Code and Codex. Each s
 claude plugin marketplace add conradmr94/AI-Tools
 claude plugin install explain-repo@ai-tools
 claude plugin install sprints@ai-tools
+claude plugin install spec@ai-tools
 ```
 
 **Codex**
@@ -29,6 +31,7 @@ claude plugin install sprints@ai-tools
 codex plugin marketplace add conradmr94/AI-Tools
 codex plugin add explain-repo@ai-tools
 codex plugin add sprints@ai-tools
+codex plugin add spec@ai-tools
 ```
 
 (Repo's currently private — ping me for access.)
