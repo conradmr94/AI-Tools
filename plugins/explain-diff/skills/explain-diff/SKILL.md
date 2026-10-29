@@ -19,7 +19,7 @@ The user names the change in words or as `/explain-diff [target]`:
 - **A branch:** that branch against its merge-base with the default branch.
 - **`S<n>`:** that slice of the spec in `docs/specs/` that matches the current branch. Its tick in the spec's Slices list names its commit. If the slice is not ticked yet, say it has not landed and stop.
 
-Say in one line which change you are explaining: `rate-limit` vs `main` (2 commits, plus uncommitted work), for example.
+Name the change you compared at the end of *In short* (see "The reply"), never as a preamble.
 
 ## Reading the change
 
@@ -29,24 +29,26 @@ Say in one line which change you are explaining: `rate-limit` vs `main` (2 commi
 
 **Nothing changed:** if the change is empty, say there is nothing to explain, name the base and target you compared, and stop. Never describe existing code as if it were part of a change.
 
-**A large change:** count meaningful lines as the lines added and removed in signal files. Over about 300, the reply opens with that, before any walkthrough: how big it is, how many commits, and an offer to go through it commit by commit (or slice by slice, when it has a spec). Then give only *In short* and one line per commit, and stop. Do the full walkthrough only if the user asks for the whole change at once.
+**A large change:** count meaningful lines as the lines added and removed in signal files. Over about 300, the reply's very first line, before *In short*, says so: how big it is, how many commits, and an offer to go through it commit by commit (or slice by slice, when it has a spec). Then give only *In short* and one line per commit, each a single sentence of at most about 20 words, and stop. Do the full walkthrough only if the user asks for the whole change at once.
 
 ## The reply
 
-In this order, under these headings. Leave out a section that has nothing in it.
+In this order, under these headings. Leave out a section that has nothing in it. The reply starts with the *In short* heading (or, for a large change, the one-line size warning): no preamble before it, and no notes about tools, the shell or the environment unless they stopped you reading part of the change.
 
 ### In short
 
-Two to four plain sentences: what the change does and why, in terms of behavior, not files. Someone who reads only this knows what the change is.
+Two to four plain sentences, never more: count them before replying. Say what the change does and why, in terms of behavior, not files. The first sentence is the main change; the rest cover only the side effects that matter most. Anything else goes in the sections below. Someone who reads only this knows what the change is. End with one short line naming what was compared: `Compared: rate-limit vs main, 2 commits, no uncommitted work.`
 
 ### Read these
 
-The lines that matter, in reading order, at most about seven entries. Each is `path:start-end` (line numbers in the new version of the file) and one line on what it is and why it matters:
+The lines that matter, in reading order, at most about seven entries. Each is `path:start-end` (line numbers in the new version of the file) and a single sentence of at most about 20 words on what it is and why it matters. Never a second sentence: detail beyond that belongs in the code the entry points to, or in *Decisions*:
 
 ```
-1. `ratelimit.py:8-24` — the token bucket; `acquire` is the whole rule.
-2. `client.py:15-20` — every request now takes a token first.
+1. `ratelimit.py:8-24` — the token bucket, where `acquire` holds the whole rate rule.
+2. `client.py:15-20` — every request now takes a token before calling the transport.
 ```
+
+Write the entry as one sentence after the dash, as above. A label followed by a full stop and a second sentence ("the token bucket. `acquire` refills…") is two sentences.
 
 Order for understanding, not by file name: start where the new behavior is decided, then the code it calls, then where it is wired in, then the tests that prove it. Check every line range against the file before giving it.
 

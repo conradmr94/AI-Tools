@@ -68,7 +68,8 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S1b Cases** — cases T1–T10 with their graders and per-case scaffold scripts, plus a stub `SKILL.md` that does nothing, so every case fails on behavior, not setup. Landed in `5a25a12`; all red except the T6 and T10 guards.
 - [x] **S2 Core walkthrough** — `SKILL.md`: target resolution, *In short*, *Read these*, *Skim or skip*, *Decisions*, the large-diff rule, the empty case and the no-files rule. Turns T1–T4, T6, T8, T9 and T10 green. Landed in `eb44456`; those eight green, T5 and T7 red as expected.
 - [x] **S3 Spec check and questions** — *Against the spec* and *Check your understanding*. Turns T5 and T7 green. Landed in `4047266`; T1–T10 green.
-- [ ] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T10 stay green.
+- [x] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T10 stay green. Landed in `7df4b63`; the `--runs 3` run then showed T1 at 1/3, T3 at 2/3 and T8 at 1/3.
+- [ ] **S5 Steadier output** — the reply opens with *In short* (or the large-change warning) with no preamble, the compared refs move to the end of *In short*, *In short* is held to four sentences, and each *Read these* entry and commit line is one sentence. Brings the skill back in line with the Interfaces section, which S2 had drifted from. Turns T1, T3 and T8 steady: each 3/3.
 
 ## Open questions
 
@@ -87,4 +88,6 @@ All resolved by Owner on 2026-10-28 in chat, as recommended:
 - **T6 and T10 pass against the stub.** Base Claude, with no guidance, already writes nothing and already says "nothing to explain" on an empty branch, so these can't fail first. They are kept as regression guards that must stay green. Approved by Owner 2026-10-28 in chat.
 - **T6 grader pattern fixed.** Its git check matched the read-only `git merge-base` as `git merge`, and missed git run through a shell variable (`$G commit`). The pattern is now `(\bgit|\$\{?\w+\}?)\s+(add|…|push)(?![\w-])`; T6's sentence is unchanged. Approved by Owner 2026-10-28 in chat.
 - **Fixture lockfile change made benign.** The branch's `requirements.lock` changed every hash while keeping every version, which the skill rightly flagged as a supply-chain risk rather than noise, failing T2. The fixture now regenerates the lock with a new header date and a different line order, with the same packages, versions and hashes. The skill still flags hash-only changes. Approved by Owner 2026-10-28 in chat.
+- **T8 grader clarified.** The judge was split on whether the short overview that follows the size warning (*In short* plus one line per commit, as the Interfaces section designs it) counted as a "walkthrough". The grader now says that overview is allowed and only a detailed walk through files or line ranges fails. T8's sentence is unchanged. Approved by Owner 2026-10-28 in chat.
+- **Extra slice S5**, added after the `--runs 3` run showed T1, T3 and T8 flaky: the agent overran the length limits and S2 had let a preamble come before *In short*, which the Interfaces section does not allow.
 - **Branch from `main` before PR #4 merged.** This work does not depend on the spec skill's code, so the branch starts from `main` as Q1 asked, without waiting for the merge.
