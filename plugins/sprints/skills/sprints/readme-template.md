@@ -48,7 +48,7 @@ Progress is appended to the task's own bullet as dated notes, and the plan text 
 
 - **Snapshot:** a table of each engineering task's current state and where it lives (branch, head commit, PR), rewritten in place.
 - **Files changed:** an index of every file the sprint's commits touched, sorted by path, with the ids of the tasks that touched it and one sentence on what the sprint's work does in that file now. Paths are built from git.
-- **Entries:** newest first, one per commit or small group of commits: `### HH:MM · E4 · c70e0c2c · headline`, then a `What:` line, a `Why:` line and a `Files:` list giving, for each file the commit touched, what changed there and why. HH:MM is the commit time from `git log`, never an estimate.
+- **Entries:** newest first, one per commit or small group of commits: `### HH:MM · E4 · c70e0c2c · headline` (with the slice, `E4 S2`, when the task has a spec), then a `What:` line, a `Why:` line and a `Files:` list giving, for each file the commit touched, what changed there and why. HH:MM is the commit time from `git log`, never an estimate.
 
 The log is updated after each commit for a sprint task. Decisions and progress notes belong in the sprint file, not the log. Agents in a parallel wave report their entries rather than editing the log.
 
