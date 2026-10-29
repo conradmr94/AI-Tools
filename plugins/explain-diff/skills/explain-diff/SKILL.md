@@ -76,7 +76,7 @@ If the change has no spec, leave this section out.
 
 Choices the change makes that nothing the user asked for decided. Compare against what you know of the request: this conversation, the commit messages and any task or spec the change belongs to. Look for:
 
-- hard-coded values and defaults (timeouts, limits, sizes, retry counts)
+- hard-coded values and defaults (timeouts, limits, sizes, retry counts): give the line where the value is defined, plus where it is used if that is elsewhere
 - error handling that hides, swallows or reshapes failures
 - new dependencies, or new uses of the network, filesystem or clock
 - changed signatures or behavior that existing callers will notice
