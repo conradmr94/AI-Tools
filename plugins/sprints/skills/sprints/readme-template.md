@@ -20,7 +20,7 @@ Every sprint file has the same sections, in this order.
 | Parallel plan | Which engineering tasks can run at the same time in separate agents, grouped into waves with a merge order, plus the tasks that must run serially or are blocked. |
 | Decisions needed | Choices only the owner can make that block a task, with the options and a recommendation. Resolved entries stay, marked resolved. |
 | Carry-over | Unfinished tasks from the previous sprint, mapped to their ids here, with why. |
-| Retrospective | Filled in when the sprint closes: what shipped, what slipped, what changed mid-sprint, what changes next time. |
+| Retrospective | Filled in when the sprint closes: what shipped, what slipped, what changed mid-sprint, a small process table (slices, largest slice, deviations and tests changed per task with a spec), and what changes next time. |
 
 ## Task format
 
