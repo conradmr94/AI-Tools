@@ -1,0 +1,8 @@
+{
+  "name": "spec",
+  "version": "1.0.0",
+  "description": "Short task specs in docs/specs/ — goal, scope, interfaces, the tests that prove it works (written and approved before any code) and the small commits it lands in.",
+  "author": {
+    "name": "matt"
+  }
+}

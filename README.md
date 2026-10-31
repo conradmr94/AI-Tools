@@ -46,7 +46,7 @@ codex plugin add ship@ai-tools
 
 1. Drop it in `plugins/<name>/skills/<name>/SKILL.md`. Use real files, not symlinks: Codex skips symlinks when it installs a plugin.
 2. Symlink it into `.claude/skills/` so it also loads while working in this repo: `ln -s ../../plugins/<name>/skills/<name> .claude/skills/<name>`.
-3. Add a Claude Code entry to `.claude-plugin/marketplace.json` (`"source": "./plugins/<name>"`, `"strict": false`, `"skills": ["./skills/<name>"]`).
+3. Add a Claude Code manifest at `plugins/<name>/.claude-plugin/plugin.json` (`name`, `version`, `description`, `author`) and an entry in `.claude-plugin/marketplace.json` (`name`, `description`, `"source": "./plugins/<name>"`, `version`). Leave `strict` and `skills` out of the entry: with `strict: false` and a plugin.json, Claude Code refuses to load the plugin ("conflicting manifests"), and `skills/` is found without them.
 4. Add a Codex manifest at `plugins/<name>/.codex-plugin/plugin.json` (`"skills": "./skills"`) and an entry in `.agents/plugins/marketplace.json`.
 5. Update the table above.
 
