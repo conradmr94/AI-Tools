@@ -12,11 +12,13 @@
 #   build.sh dirty     as ready, plus an uncommitted edit to client.py
 #   build.sh no-spec   as ready, without the spec
 #   build.sh docs      as ready, plus explain-repo docs on main checked against main's first commit
+#   build.sh stacked   as ready, but `rate-limit` is cut from `retry`, a branch on origin with one
+#                      commit (a retry helper) that is not merged into main
 #
 # The checkout is left on `rate-limit`, or on main for on-main.
 set -euo pipefail
 
-variant="${1:?usage: build.sh ready|red|on-main|dirty|no-spec|docs}"
+variant="${1:?usage: build.sh ready|red|on-main|dirty|no-spec|docs|stacked}"
 
 git init -q -b main .
 git config user.name "Fixture"
@@ -93,6 +95,23 @@ EOF
   git config "remote.origin.${helper%-pack}pack" "$PWD/.git/$helper.sh"
 done
 git push -q -u origin main
+
+if [ "$variant" = "stacked" ]; then
+  git switch -q -c retry
+  cat > retry.py <<'EOF'
+def with_retries(call, attempts=3):
+    """Calls call() up to `attempts` times, returning the first result that doesn't raise."""
+    for attempt in range(attempts):
+        try:
+            return call()
+        except Exception:
+            if attempt == attempts - 1:
+                raise
+EOF
+  git add retry.py
+  git commit -q -m "Add a retry helper"
+  git push -q -u origin retry
+fi
 
 if [ "$variant" != "on-main" ]; then
   git switch -q -c rate-limit
