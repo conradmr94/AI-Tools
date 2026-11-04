@@ -1,7 +1,7 @@
 {
   "name": "cross-review",
-  "version": "1.0.1",
-  "description": "Gets a code change reviewed by a separate agent on this computer: you pick Claude or Codex, it runs read-only, and each finding is checked against the code and reported as confirmed or disputed.",
+  "version": "1.1.0",
+  "description": "Gets a code change reviewed by a separate agent on this computer: you pick Claude, Codex or Kiro, it runs read-only, and each finding is checked against the code and reported as confirmed or disputed.",
   "author": {
     "name": "matt"
   }
