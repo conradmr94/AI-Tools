@@ -1,6 +1,6 @@
 # Spec: cross-review skill
 
-- Status: Approved 2026-11-03
+- Status: Done 2026-11-03
 - Task: None. This repo has no sprints; the idea comes from chat on 2026-11-03.
 - Branch: `cross-review`, cut from `origin/main`
 
@@ -99,7 +99,7 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S8 Git fallback and instruction reporting** — ship's rule for a blocked system git, and an *Instructions in the review* report section. Landed in `c0ede07`.
 - [x] **S9 Always report instructions** — step 5 requires the *Instructions in the review* section whenever the reviewer output gives one. Landed in `5d01555`; T1–T15 green.
 - [x] **S10 Tests for the second review** — adds T16 and T17, and narrows T11's `no-touch` grader. Landed in `a9facfe`; T16 and T17 red.
-- [ ] **S11 Second-review fixes** — see Deviations. Turns T16 and T17 green; T1–T15 stay green.
+- [x] **S11 Second-review fixes** — see Deviations. Turns T16 and T17 green; T1–T15 stay green. Landed in `a92f704`; T1–T17 green; T1, T4 and T11 each 6 of 6 on repeat runs.
 
 ## Open questions
 
@@ -129,4 +129,5 @@ All approved by Owner on 2026-11-03 in chat. They came from the hand checks and 
 - **The sandbox approval covers any reviewer.** A nested `codex exec` failed in Codex's read-only sandbox with `Operation not permitted`, while `codex login status` passed. Approved by Owner 2026-11-03 in chat.
 - **"Only one can run" now says to end the turn.** T4 failed once with the agent running Claude unasked; after this wording T4 and T1 each passed 6 of 6.
 - **Left as they are, from the second review:** a named branch's spec that exists only on that branch is missed; a failed git command inside the pipe can be masked; Claude reads surrounding code from the working tree only.
+- **Hand checks done 2026-11-03.** Real runs of both reviewers with the final commands found the fixture's off-by-one and left the tree unchanged. Write attempts failed on both reviewers. Still for Owner, after install: Claude and Codex launched from inside Codex, and the Codex plugin install.
 - **T15 was never red.** The agent already sent uncommitted contents, by running `git diff <base>` alone. The wording in S7 removes the ambiguity both reviewers flagged.
