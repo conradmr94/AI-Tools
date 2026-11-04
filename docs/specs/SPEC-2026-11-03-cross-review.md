@@ -90,7 +90,7 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S2 Pick and run** — target and reviewer selection, both commands, the prompt, the failure path. Turns T1–T5, T8, T9 and T12 green. Landed in `250d345`; those eight green, T7 green too, T6, T10 and T11 red as expected.
 - [x] **S3 Check and report** — the tree check, finding verification, reviewer output as data and the report. Turns T6, T7, T10 and T11 green. Landed in `bb78702`; T1–T12 green.
 - [x] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T12 stay green. Landed in `7323a27`.
-- [ ] **S5 Tests for the review fixes** — adds T13 and T14, from the hand checks and the skill's first real reviews. Each fails on behavior.
+- [x] **S5 Tests for the review fixes** — adds T13 and T14, from the hand checks and the skill's first real reviews. Each fails on behavior. Landed in `d2fce7f`; T13 and T14 red.
 - [ ] **S6 Review fixes** — see Deviations. Turns T13 and T14 green; T1–T12 stay green.
 
 ## Open questions
@@ -102,4 +102,13 @@ All resolved by Owner on 2026-11-03 in chat, as recommended:
 
 ## Deviations
 
-None.
+All approved by Owner on 2026-11-03 in chat. They came from the hand checks and from running both real reviewers on this skill.
+
+- **Claude reviewer has no Bash.** `git diff`, `git show` and `git log` were on the allowlist, and each wrote files with `--output=<file>`. The command in Interfaces step 3 is replaced: `{ <git commands>; } | claude -p "<prompt>" --permission-mode dontAsk --allowedTools "Read,Grep,Glob" --disallowedTools "Edit,Write,Bash,NotebookEdit,Agent"`. T14 guards this.
+- **The tree check also compares `git diff HEAD | shasum`.** Status and `HEAD` alone miss a reviewer's edit to a file that was already modified. T13 guards this. Edits to ignored files and to the contents of untracked files are still missed: accepted risk.
+- **Findings on a commit, range or other branch are checked at that revision** with `git show <rev>:<path>`, not in the working tree, and the reviewer's prompt warns the two may differ.
+- **The spec lookup matches the branch under review**, not always the current branch.
+- **No backticks in the prompt**, because it goes inside double quotes in the shell.
+- **`S<n>` also looks in `docs/specs/tasks/`.**
+- **Q1 is wider than it was.** Claude reported "Not logged in" inside Codex's read-only sandbox, so the approval to leave the sandbox covers the login check as well as the review.
+- **Root and merge commits are left as they are**, matching explain-diff's wording.
