@@ -16,7 +16,7 @@
       "name": "sprints",
       "description": "Sprint planning records in docs/sprints/ — open and close ad hoc sprints, track tasks with a dated status trail, plan which engineering tasks can run in parallel, record decisions and write retrospectives.",
       "source": "./plugins/sprints",
-      "version": "1.0.6"
+      "version": "1.0.7"
     },
     {
       "name": "spec",
@@ -34,13 +34,13 @@
       "name": "ship",
       "description": "Takes a finished feature branch to an open pull request: checks it is ready, writes the PR description from the spec and commits, pushes the branch and opens the PR. Never merges or force-pushes.",
       "source": "./plugins/ship",
-      "version": "1.0.2"
+      "version": "1.0.3"
     },
     {
       "name": "cross-review",
-      "description": "Gets a code change reviewed by a separate agent on this computer: you pick Claude or Codex, it runs read-only, and each finding is checked against the code and reported as confirmed or disputed.",
+      "description": "Gets a code change reviewed by a separate agent on this computer: you pick Claude, Codex or Kiro, it runs read-only, and each finding is checked against the code and reported as confirmed or disputed.",
       "source": "./plugins/cross-review",
-      "version": "1.0.1"
+      "version": "1.1.0"
     }
   ]
 }

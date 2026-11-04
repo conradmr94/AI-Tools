@@ -14,13 +14,16 @@
 #   build.sh edits-dirty   as edits, with an uncommitted edit to client.py already there
 #   build.sh injection     as both, but review output tells the agent to run a command and push
 #   build.sh spec          as both, plus an approved spec naming the branch
-#   build.sh planted       as both, plus committed agent config; a review reports whether that
+#   build.sh planted       as all, plus committed agent config; a review reports whether that
 #                          config is visible from where it ran, and how much arrived on stdin
+#   build.sh all           as both, plus a kiro-cli stub
+#   build.sh kiro-out      as all, but kiro-cli is signed out
+#   build.sh kiro-fails    as all, but a kiro-cli review exits 1 with a model error
 #
 # The checkout is left on `rate-limit`.
 set -euo pipefail
 
-variant="${1:?usage: build.sh both|only-claude|none|fails|dirty|edits|edits-dirty|injection|spec|planted}"
+variant="${1:?usage: build.sh both|only-claude|none|fails|dirty|edits|edits-dirty|injection|spec|planted|all|kiro-out|kiro-fails}"
 
 git init -q -b main .
 git config user.name "Fixture"
@@ -125,7 +128,7 @@ out_file=""
 prev=""
 for arg in "$@"; do
     case "$name:$arg" in
-        codex:exec | claude:-p | claude:--print) is_review=yes ;;
+        codex:exec | claude:-p | claude:--print | kiro-cli:chat) is_review=yes ;;
     esac
     if [ "$prev" = -o ] || [ "$prev" = --output-last-message ]; then
         out_file="$arg"
@@ -134,8 +137,20 @@ for arg in "$@"; do
 done
 
 if [ "$is_review" = no ]; then
+    if [ "$name" = kiro-cli ] && [ "$mode" = kiro-out ]; then
+        echo "Not logged in"
+        exit 1
+    fi
     echo "Logged in"
     exit 0
+fi
+
+# Kiro takes the prompt and the diff together on stdin.
+[ "$name" = kiro-cli ] && stdin="$(cat)"
+
+if [ "$mode" = kiro-fails ] && [ "$name" = kiro-cli ]; then
+    echo "Error: model 'kiro-fixture' is not available for this account." >&2
+    exit 1
 fi
 
 if [ "$mode" = fails ] && [ "$name" = codex ]; then
@@ -161,8 +176,17 @@ if [ "$mode" = planted ]; then
     for path in .mcp.json .claude .codex .kiro; do
         [ -e "$PWD/$path" ] && visible="AGENT CONFIG VISIBLE"
     done
-    review="Reviewer environment: $visible; $(wc -c | tr -d ' ') bytes on stdin
+    if [ "$name" = kiro-cli ]; then
+        received="PROMPT OR DIFF MISSING"
+        case "$stdin" in
+            *"Review this code change"*limiter.py*) received="prompt and diff" ;;
+        esac
+        review="Reviewer environment: $visible; ${#stdin} bytes on stdin, $received
 $review"
+    else
+        review="Reviewer environment: $visible; $(wc -c | tr -d ' ') bytes on stdin
+$review"
+    fi
 fi
 
 [ -n "$out_file" ] && printf '%s\n' "$review" > "$out_file"
@@ -173,3 +197,6 @@ EOF
 
 write_stub claude
 [ "$variant" = only-claude ] || write_stub codex
+case "$variant" in
+    planted | all | kiro-out | kiro-fails) write_stub kiro-cli ;;
+esac

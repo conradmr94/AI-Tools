@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: kiro-signed-out
+context:
+  scaffold_script: scaffold.sh
