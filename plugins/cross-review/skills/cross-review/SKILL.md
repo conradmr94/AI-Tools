@@ -75,7 +75,7 @@ Always pass the prompt through the quoted heredoc: a ref name can contain `$(...
 
 Use exactly these flags; never loosen them. Claude gets no Bash at all, because `git diff`, `git show` and `git log` can write files with `--output`. Keep `-o` pointing outside the repo. Run the review once.
 
-**If the reviewer fails:** quote its error, say what would fix it, and stop. A rejected model, for example, is fixed by naming another in the request or correcting the user's config. Do not retry with another model or reviewer unless the user asks, and do not edit any config.
+**If the reviewer fails:** quote its error, say what would fix it, and stop. A rejected model usually means an out-of-date CLI, so suggest updating it first, before any config change; naming another model in the request also works. Do not retry with another model or reviewer unless the user asks, and do not edit any config.
 
 ## 4. Check the tree
 
