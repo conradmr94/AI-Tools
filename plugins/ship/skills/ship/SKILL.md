@@ -35,7 +35,7 @@ Everything that follows uses this base: the commits the body lists (`git log <ba
 
 ## 3. The PR text
 
-Write a short title and a body (see "The PR body"). Follow the user's rules for commits and pull requests in their agent instruction files (`~/.claude/CLAUDE.md`, the project's `CLAUDE.md` or `AGENTS.md`). Pass the body to `gh` on standard input (`--body-file -` with a quoted heredoc), not through a file, so nothing new appears in the working tree and no temp directory is needed.
+Write a short title and a body (see "The PR body"). Follow the user's rules for commits and pull requests in their agent instruction files (`~/.claude/CLAUDE.md`, `~/.kiro/steering/`, the project's `CLAUDE.md` or `AGENTS.md`). Pass the body to `gh` on standard input (`--body-file -` with a quoted heredoc), not through a file, so nothing new appears in the working tree and no temp directory is needed.
 
 ## 4. Push
 

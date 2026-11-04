@@ -27,7 +27,7 @@ When `docs/sprints/` does not exist and the user asks for sprints:
 2. Pick the tracks. The default is two: a non-engineering track and an Engineering track. Call the first Business for a company with customers, or Product for a solo product (practice, user feedback, content). Ask only if it is genuinely unclear.
 3. Write `docs/sprints/README.md` from [readme-template.md](readme-template.md), substituting the track names, owning documents and project rules. Keep links relative and correct.
 4. Open the first sprint from [sprint-template.md](sprint-template.md), with its log from [log-template.md](log-template.md) (see "Opening a sprint").
-5. Add this line to the project's agent instructions file (`CLAUDE.md` for Claude Code, `AGENTS.md` for Codex; update whichever exist, or create the one for the agent you are running in if neither does), so future sessions pick up sprints unprompted:
+5. Add this line to the project's agent instructions file (`CLAUDE.md` for Claude Code, `AGENTS.md` for Codex and Kiro; update whichever exist, or create the one for the agent you are running in if neither does), so future sessions pick up sprints unprompted:
    `Sprints: plans live in docs/sprints/ (see its README). Use the sprints skill: check the open sprint before starting work and update it as tasks finish.`
    If the project's engineering guide lists where documents live, add the sprints directory there too.
 

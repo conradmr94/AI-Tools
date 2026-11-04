@@ -1,6 +1,6 @@
 # AI-Tools 🛠️
 
-My personal grab bag of [Claude Code](https://claude.com/claude-code) and [Codex](https://developers.openai.com/codex) skills — a living collection that grows whenever I build or find something worth keeping around.
+My personal grab bag of [Claude Code](https://claude.com/claude-code), [Codex](https://developers.openai.com/codex) and [Kiro](https://kiro.dev) skills — a living collection that grows whenever I build or find something worth keeping around.
 
 ## What's in here
 
@@ -17,7 +17,7 @@ More to come as I need them.
 
 ## Installing
 
-This repo doubles as a plugin marketplace for both Claude Code and Codex. Each skill is its own plugin, so install only the ones you want.
+This repo doubles as a plugin marketplace for both Claude Code and Codex, and Kiro can link its skills straight from a clone. Each skill stands alone, so install only the ones you want.
 
 **Claude Code**
 
@@ -43,6 +43,23 @@ codex plugin add ship@ai-tools
 codex plugin add cross-review@ai-tools
 ```
 
+**Kiro**
+
+Kiro has no marketplace command, so clone the repo and link the skills you want. `kiro-cli`, `kirocrew chat` and the Kiro IDE all read `~/.kiro/skills`.
+
+```bash
+git clone https://github.com/conradmr94/AI-Tools.git ~/AI-Tools
+mkdir -p ~/.kiro/skills
+ln -s ~/AI-Tools/plugins/explain-repo/skills/explain-repo ~/.kiro/skills/explain-repo
+ln -s ~/AI-Tools/plugins/sprints/skills/sprints ~/.kiro/skills/sprints
+ln -s ~/AI-Tools/plugins/spec/skills/spec ~/.kiro/skills/spec
+ln -s ~/AI-Tools/plugins/explain-diff/skills/explain-diff ~/.kiro/skills/explain-diff
+ln -s ~/AI-Tools/plugins/ship/skills/ship ~/.kiro/skills/ship
+ln -s ~/AI-Tools/plugins/cross-review/skills/cross-review ~/.kiro/skills/cross-review
+```
+
+To update them all, run `git -C ~/AI-Tools pull`. Custom Kiro agents load no skills unless they list them in `resources`, for example `skill://~/.kiro/skills/*/SKILL.md`.
+
 (Repo's currently private — ping me for access.)
 
 ## Adding a new skill
@@ -51,6 +68,7 @@ codex plugin add cross-review@ai-tools
 2. Symlink it into `.claude/skills/` so it also loads while working in this repo: `ln -s ../../plugins/<name>/skills/<name> .claude/skills/<name>`.
 3. Add a Claude Code manifest at `plugins/<name>/.claude-plugin/plugin.json` (`name`, `version`, `description`, `author`) and an entry in `.claude-plugin/marketplace.json` (`name`, `description`, `"source": "./plugins/<name>"`, `version`). Leave `strict` and `skills` out of the entry: with `strict: false` and a plugin.json, Claude Code refuses to load the plugin ("conflicting manifests"), and `skills/` is found without them.
 4. Add a Codex manifest at `plugins/<name>/.codex-plugin/plugin.json` (`"skills": "./skills"`) and an entry in `.agents/plugins/marketplace.json`.
-5. Update the table above.
+5. Link it for Kiro: `ln -s ../../plugins/<name>/skills/<name> .kiro/skills/<name>`, and add its install line to the Kiro section above.
+6. Update the table above.
 
 No PR template, no ceremony — just useful skills, kept sharp.

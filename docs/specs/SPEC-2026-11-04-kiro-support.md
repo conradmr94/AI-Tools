@@ -85,14 +85,14 @@ Not covered by automated tests:
 - Running the skills inside Kiro. `claude plugin eval` only drives Claude. Checked by hand before finishing: follow the README steps in a throwaway copy, confirm all six skills are listed by `kiro-cli chat`, and run `explain-diff` on a real change. Linking into the real `~/.kiro/skills` is left to Owner.
 - `ship` and `sprints` writing to the repo from inside Kiro. Kiro asks for or refuses tools differently, and `--no-interactive` can't show that. Left to Owner as a manual step in an interactive session.
 - The Kiro IDE. It is not installed here. Its docs say it shares `~/.kiro/skills`, so the same steps should work. Left to Owner.
-- Crew. Checked by hand during S2 (see Q2): link a skill into `~/.kiro/crew/skills/` and confirm Crew lists it.
+- Crew. Checked by hand during S2 (see Deviations): `kirocrew chat -m` lists a skill linked into `~/.kiro/skills`. Agents run through the Crew gateway or dashboard were not tested.
 
 ## Slices
 
 One commit each, on the branch above, in this order. Budget: about 300 changed lines per slice, not counting lockfiles, generated files or snapshots. Each is ticked with its commit once it lands.
 
-- [ ] **S1a Host tests** — this spec and T1–T5. All fail because nothing is wired up yet.
-- [ ] **S1b Kiro eval cases** — the `kiro-cli` stub, fixture variants and T6–T11. All red; the existing 21 stay green.
+- [x] **S1a Host tests** — this spec and T1–T5. All fail because nothing is wired up yet. Landed in `d536f12`; T1–T5 red.
+- [x] **S1b Kiro eval cases** — the `kiro-cli` stub, fixture variants and T6–T11. All red; the existing 21 stay green. Landed in `f1d9059`; T6–T11 red, 20 of the 21 green on the full run, and `tree-changed` green on 3 of 3 reruns after a split judge vote.
 - [ ] **S2 Skills install in Kiro** — `.kiro/skills/`, the README, and the `sprints` and `ship` wording and versions. Turns T1–T5 green.
 - [ ] **S3 Kiro as a reviewer** — the `cross-review` skill, its version, description and README row. Turns T6–T11 green; the existing 21 stay green.
 
@@ -106,3 +106,5 @@ All resolved by Owner on 2026-11-04 in chat, as recommended:
 ## Deviations
 
 - **The login check is `kiro-cli whoami` succeeding, not a non-null `account` in its JSON.** Signed-in JSON has no `account` key, so the approved check would have called a signed-in user signed out. It exits 0 signed in and 1 signed out, the same as the other two reviewers' checks. Behavior is what was approved; the spec's line is corrected. Shown to Owner at approval 2.
+- **Crew needs no README line of its own.** Q2 expected one for `~/.kiro/crew/skills/`. With Crew installed, `kirocrew chat -m` did not list a skill linked there, and did list one linked into `~/.kiro/skills`, so the main install steps cover it and the README says so.
+- **Crew does have a one-shot command, `kirocrew chat -m`.** This spec said it had none. It stays out as a reviewer for a different reason: it has no flag limiting tools, and its help says the jail is a no-op on the public edition, so it can't meet the read-only rule.
