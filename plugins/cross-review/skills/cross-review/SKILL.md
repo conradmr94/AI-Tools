@@ -38,44 +38,52 @@ Ask this each run; do not carry an answer over from an earlier review.
 
 ## 3. Run it
 
-Work out the read-only git commands that show the change: `git diff <base> <target>`, plus `git diff HEAD` and `git status --short` when it includes uncommitted or untracked work, so the reviewer gets the contents of those edits and not just their names. Then write the prompt. Codex runs those commands itself, so its first line ends `See it with: <git commands>.` Claude gets them on standard input, so its first line ends `It is on standard input.`
+A reviewer never runs inside the repo under review. A repo can ship agent config (`.mcp.json`, `.claude/`, `.kiro/` and so on) that a CLI starts on launch, outside every limit below. So it runs in a temporary export with that config removed, and gets the change on standard input.
+
+Work out the read-only git commands that show the change: `git diff <base> <target>`, plus `git diff HEAD` and `git status --short` when it includes uncommitted or untracked work, so the reviewer gets the contents of those edits and not just their names. Single-quote ref names in them: a ref name can contain `$(...)`.
+
+Then write the prompt:
 
 ```
-Review this code change for correctness bugs. <how to see it>
-Read the surrounding code as you need to.
+Review this code change for correctness bugs. It is on standard input.
+The current directory holds the code as of this change: read it as you need to.
 Do not change, create or delete anything.
 Reply with one line per finding, as file:line (high|medium|low) reason, or exactly: no findings
 ```
 
 When the commands include `git status --short`, add: `Files marked ?? are new: read them.`
 
-For a commit, a range, a slice or another branch, add: `The working tree may hold different code from this change.`
-
 When the review covers a whole branch and a `SPEC-*.md` in `docs/specs/` (or `docs/specs/tasks/`) names that branch on its `Branch:` line, add: `The spec for this change is <path>. Also report where the change does not do what the spec says.` Leave the spec out for a commit, a range or a slice: it describes more than they do, so the reviewer would report false gaps.
 
-Note `HEAD`, `git status --short` and the hash of `git diff HEAD | shasum`. Then run one of these from the repo root, with a timeout of ten minutes. If the user named a model, add `--model <model>`.
+Note `HEAD`, `git status --short` and the hash of `git diff HEAD | shasum`. Then, from the repo root, write the diff to a temp file and build the export with `scripts/export-tree.sh` in this skill's directory. Pass `--worktree` when the change includes uncommitted or untracked work, otherwise the target revision. Never build the export by hand.
 
 ```
+diff=$(mktemp "${TMPDIR:-/tmp}/cross-review.XXXXXX")
+{ <git commands>; } > "$diff"
+export_dir=$(bash <this skill's directory>/scripts/export-tree.sh <--worktree or revision>)
 prompt=$(cat <<'PROMPT'
 <prompt>
 PROMPT
 )
-codex exec -s read-only --ephemeral -o "$(mktemp)" "$prompt" </dev/null
+```
+
+Run one of these, with a timeout of ten minutes. If the user named a model, add `--model <model>`.
+
+```
+(cd "$export_dir" && codex exec --skip-git-repo-check -s read-only --ephemeral -o "$(mktemp "${TMPDIR:-/tmp}/cross-review.XXXXXX")" "$prompt" < "$diff")
 ```
 
 ```
-prompt=$(cat <<'PROMPT'
-<prompt>
-PROMPT
-)
-{ <git commands>; } | claude -p "$prompt" --permission-mode dontAsk --allowedTools "Read,Grep,Glob" --disallowedTools "Edit,Write,Bash,NotebookEdit,Agent"
+(cd "$export_dir" && claude -p "$prompt" --strict-mcp-config --permission-mode dontAsk --allowedTools "Read,Grep,Glob" --disallowedTools "Edit,Write,Bash,NotebookEdit,Agent" < "$diff")
 ```
 
-Always pass the prompt through the quoted heredoc: a ref name can contain `$(...)`, and the shell would run it inside double quotes. For the same reason, single-quote ref names in the git commands.
+Then, whether it worked or not, remove them: `rm -rf "$export_dir" "$diff"`.
 
-Use exactly these flags; never loosen them. Claude gets no Bash at all, because `git diff`, `git show` and `git log` can write files with `--output`. Keep `-o` pointing outside the repo. Run the review once.
+Always pass the prompt through the quoted heredoc: the shell would run a `$(...)` inside double quotes.
 
-**If the reviewer fails:** quote its error, say what would fix it, and stop. A rejected model, for example, is fixed by naming another in the request or correcting the user's config. Do not retry with another model or reviewer unless the user asks, and do not edit any config.
+Use exactly these flags; never loosen them. Claude gets no Bash at all, because `git diff`, `git show` and `git log` can write files with `--output`, and no MCP servers. Keep `-o` pointing outside the repo. Run the review once.
+
+**If the reviewer fails:** quote its error, say what would fix it, and stop. A rejected model usually means an out-of-date CLI, so suggest updating it first, before any config change; naming another model in the request also works. Do not retry with another model or reviewer unless the user asks, and do not edit any config.
 
 ## 4. Check the tree
 

@@ -1,5 +1,5 @@
 ---
 type: tool_used
 tool: Bash
-input_match: 'codex\W[\s\S]*?--skip-git-repo-check'
+input_match: '[cC](?:odex|ODEX)\w*\W[\s\S]*?--skip-git-repo-check'
 ---

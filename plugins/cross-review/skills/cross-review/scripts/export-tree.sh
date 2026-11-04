@@ -10,21 +10,34 @@ set -euo pipefail
 
 target="${1:?usage: export-tree.sh <rev>|--worktree}"
 
-cd "$(git rev-parse --show-toplevel)"
+# A sandbox can block the system git, so try the usual installs too.
+git=""
+for candidate in git /opt/homebrew/bin/git /usr/local/bin/git; do
+    if root="$("$candidate" rev-parse --show-toplevel 2>/dev/null)"; then
+        git="$candidate"
+        break
+    fi
+done
+if [ -z "$git" ]; then
+    echo "export-tree.sh: no working git, or not in a repo" >&2
+    exit 1
+fi
+cd "$root"
 
 if [ "$target" != --worktree ]; then
-    rev="$(git rev-parse --verify --quiet --end-of-options "$target^{commit}")" || {
+    rev="$("$git" rev-parse --verify --quiet --end-of-options "$target^{commit}")" || {
         echo "export-tree.sh: not a revision: $target" >&2
         exit 1
     }
 fi
 
-export_dir="$(mktemp -d)"
+# An explicit template, because a bare mktemp can ignore TMPDIR and fail in a sandbox.
+export_dir="$(mktemp -d "${TMPDIR:-/tmp}/cross-review.XXXXXX")"
 finished=no
 trap '[ "$finished" = yes ] || rm -rf "$export_dir"' EXIT
 
 if [ "$target" = --worktree ]; then
-    git ls-files -z --cached --others --exclude-standard |
+    "$git" ls-files -z --cached --others --exclude-standard |
         while IFS= read -r -d '' path; do
             if [ -e "$path" ] || [ -L "$path" ]; then
                 printf '%s\0' "$path"
@@ -33,7 +46,7 @@ if [ "$target" = --worktree ]; then
         tar --null -T - -cf - |
         tar -x -C "$export_dir"
 else
-    git archive "$rev" | tar -x -C "$export_dir"
+    "$git" archive "$rev" | tar -x -C "$export_dir"
 fi
 
 find "$export_dir" -type l -delete
