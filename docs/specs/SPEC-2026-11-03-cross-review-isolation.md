@@ -72,7 +72,7 @@ Not covered by automated tests:
 
 One commit each, on the branch above, in this order. Budget: about 300 changed lines per slice, not counting lockfiles, generated files or snapshots. Each is ticked with its commit once it lands.
 
-- [ ] **S1a Shell tests** — this spec and T1–T7. Each fails because the script does not exist.
+- [x] **S1a Shell tests** — this spec and T1–T7. Each fails because the script does not exist. Landed in `c3ef60c`; all red.
 - [ ] **S1b Eval harness and cases** — T8–T11, a `planted` fixture variant, and stubs that report what they can see. Harness changes to approved tests: prompts give stub paths from the repo root so they work after `cd`, and reviewer-command patterns accept a quoted or variable path. T2 and T14 change to match the new commands: Codex gets `--skip-git-repo-check`, and the diff arrives by redirect or pipe. No expected behavior weakens.
 - [ ] **S2 Export script** — `export-tree.sh`. Turns T1–T7 green.
 - [ ] **S3 Reviewers run in the export** — the skill's new step 3, the hint from `9fbd646`, and the version bump. Turns T8–T11 green; the original 17 stay green.
