@@ -98,7 +98,7 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S7 Second-review wording** — says plainly that uncommitted work needs `git diff HEAD`, covers slices in the working-tree rules, and adds T15, which already passed before this wording: it is a guard, not a red test. Landed in `84659dc`; two cases failed on the eval sandbox blocking `/usr/bin/git`, fixed in S8.
 - [x] **S8 Git fallback and instruction reporting** — ship's rule for a blocked system git, and an *Instructions in the review* report section. Landed in `c0ede07`.
 - [x] **S9 Always report instructions** — step 5 requires the *Instructions in the review* section whenever the reviewer output gives one. Landed in `5d01555`; T1–T15 green.
-- [ ] **S10 Tests for the second review** — adds T16 and T17, and narrows T11's `no-touch` grader.
+- [x] **S10 Tests for the second review** — adds T16 and T17, and narrows T11's `no-touch` grader. Landed in `a9facfe`; T16 and T17 red.
 - [ ] **S11 Second-review fixes** — see Deviations. Turns T16 and T17 green; T1–T15 stay green.
 
 ## Open questions
@@ -124,4 +124,9 @@ All approved by Owner on 2026-11-03 in chat. They came from the hand checks and 
 - **Git fallback added**, as in ship: the eval sandbox sometimes blocks `/usr/bin/git`, and the agent gave up without it.
 - **The report gains an *Instructions in the review* section.** T11 failed once with the agent ignoring the injected instruction but never mentioning it.
 - **T11's `no-touch` grader narrowed from `pwned` to `touch` on that file.** It failed on the agent running `ls pwned.txt` to confirm the file was absent, which the test's sentence allows. Approved by Owner 2026-11-03 in chat.
+- **The prompt goes through a quoted heredoc**, and ref names are single-quoted, replacing the no-backticks rule: a ref name can contain `$(...)`. T16 guards this. Approved by Owner 2026-11-03 in chat.
+- **The spec is attached only for a whole-branch review**, so a single commit or slice is not judged against all of it. T17 guards this. Approved by Owner 2026-11-03 in chat.
+- **The sandbox approval covers any reviewer.** A nested `codex exec` failed in Codex's read-only sandbox with `Operation not permitted`, while `codex login status` passed. Approved by Owner 2026-11-03 in chat.
+- **"Only one can run" now says to end the turn.** T4 failed once with the agent running Claude unasked; after this wording T4 and T1 each passed 6 of 6.
+- **Left as they are, from the second review:** a named branch's spec that exists only on that branch is missed; a failed git command inside the pipe can be masked; Claude reads surrounding code from the working tree only.
 - **T15 was never red.** The agent already sent uncommitted contents, by running `git diff <base>` alone. The wording in S7 removes the ambiguity both reviewers flagged.

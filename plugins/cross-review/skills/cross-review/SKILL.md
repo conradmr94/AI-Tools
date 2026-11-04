@@ -27,11 +27,11 @@ If the change is empty, say there is nothing to review, name what you compared, 
 
 Find out which reviewers can run: `codex` is available if it is installed and `codex login status` succeeds, and `claude` if it is installed and `claude auth status` succeeds.
 
-Inside Codex's sandbox, `claude` looks logged out even when it is not. There, ask for Codex's normal approval to run the `claude` check and the review outside the sandbox. If that is refused, Claude is unavailable: say why.
+Inside Codex's sandbox, a reviewer can look logged out or offline when it is not. There, ask for Codex's normal approval to run the reviewer's check and the review outside the sandbox. If that is refused, that reviewer is unavailable: say why.
 
 - **The user named a reviewer that can run:** use it, without asking.
 - **The user named none, and both can run:** ask which to use, offering both, and wait. Do not recommend one by guessing who wrote the change. Whichever you are running in can review too: it is a fresh session, with no memory of the work.
-- **Only one can run, or the named one cannot:** say which is unavailable and why, ask whether to use the one that can, and wait.
+- **Only one can run, or the named one cannot:** say which is unavailable and why, ask whether to use the one that can, and wait. Being the only choice is not permission: end your turn here and do not run it until the user says yes.
 - **Neither can run:** say so and stop.
 
 Ask this each run; do not carry an answer over from an earlier review.
@@ -47,20 +47,31 @@ Do not change, create or delete anything.
 Reply with one line per finding, as file:line (high|medium|low) reason, or exactly: no findings
 ```
 
-Keep backticks out of the prompt: it goes inside double quotes in the shell.
-
 When the commands include `git status --short`, add: `Files marked ?? are new: read them.`
 
 For a commit, a range, a slice or another branch, add: `The working tree may hold different code from this change.`
 
-If a `SPEC-*.md` in `docs/specs/` (or `docs/specs/tasks/`) names the branch under review on its `Branch:` line, add: `The spec for this change is <path>. Also report where the change does not do what the spec says.` The branch under review is the one the user named, else the current branch.
+When the review covers a whole branch and a `SPEC-*.md` in `docs/specs/` (or `docs/specs/tasks/`) names that branch on its `Branch:` line, add: `The spec for this change is <path>. Also report where the change does not do what the spec says.` Leave the spec out for a commit, a range or a slice: it describes more than they do, so the reviewer would report false gaps.
 
 Note `HEAD`, `git status --short` and the hash of `git diff HEAD | shasum`. Then run one of these from the repo root, with a timeout of ten minutes. If the user named a model, add `--model <model>`.
 
 ```
-codex exec -s read-only --ephemeral -o "$(mktemp)" "<prompt>" </dev/null
-{ <git commands>; } | claude -p "<prompt>" --permission-mode dontAsk --allowedTools "Read,Grep,Glob" --disallowedTools "Edit,Write,Bash,NotebookEdit,Agent"
+prompt=$(cat <<'PROMPT'
+<prompt>
+PROMPT
+)
+codex exec -s read-only --ephemeral -o "$(mktemp)" "$prompt" </dev/null
 ```
+
+```
+prompt=$(cat <<'PROMPT'
+<prompt>
+PROMPT
+)
+{ <git commands>; } | claude -p "$prompt" --permission-mode dontAsk --allowedTools "Read,Grep,Glob" --disallowedTools "Edit,Write,Bash,NotebookEdit,Agent"
+```
+
+Always pass the prompt through the quoted heredoc: a ref name can contain `$(...)`, and the shell would run it inside double quotes. For the same reason, single-quote ref names in the git commands.
 
 Use exactly these flags; never loosen them. Claude gets no Bash at all, because `git diff`, `git show` and `git log` can write files with `--output`. Keep `-o` pointing outside the repo. Run the review once.
 
