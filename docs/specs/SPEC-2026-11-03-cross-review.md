@@ -82,7 +82,7 @@ Not covered by automated tests:
 
 One commit each, on the branch above, in this order. Budget: about 300 changed lines per slice, not counting lockfiles, generated files or snapshots. Each is ticked with its commit once it lands.
 
-- [ ] **S1a Fixture** — `evals/fixture/build.sh` and the stub reviewer variants.
+- [x] **S1a Fixture** — `evals/fixture/build.sh` and the stub reviewer variants. Landed in `21bd437`.
 - [ ] **S1b Picking cases** — T1–T5 and T12 with graders and scaffolds, the Claude plugin manifest the eval runner needs, and a stub `SKILL.md` that does nothing, so each fails on behavior, not setup.
 - [ ] **S1c Running and reporting cases** — T6–T11. Each fails on behavior; T7 may pass as a guard, as ship's T7 did.
 - [ ] **S2 Pick and run** — target and reviewer selection, both commands, the prompt, the failure path. Turns T1–T5, T8, T9 and T12 green.
