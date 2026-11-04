@@ -1,6 +1,6 @@
 # Spec: Kiro support
 
-- Status: Approved 2026-11-04
+- Status: Done 2026-11-04
 - Task: None. Owner asked on 2026-11-04 for Kiro to get the same folders and install steps as Claude and Codex, for every skill.
 - Branch: `kiro-support`, cut from `origin/main`
 
@@ -93,8 +93,8 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 
 - [x] **S1a Host tests** — this spec and T1–T5. All fail because nothing is wired up yet. Landed in `d536f12`; T1–T5 red.
 - [x] **S1b Kiro eval cases** — the `kiro-cli` stub, fixture variants and T6–T11. All red; the existing 21 stay green. Landed in `f1d9059`; T6–T11 red, 20 of the 21 green on the full run, and `tree-changed` green on 3 of 3 reruns after a split judge vote.
-- [ ] **S2 Skills install in Kiro** — `.kiro/skills/`, the README, and the `sprints` and `ship` wording and versions. Turns T1–T5 green.
-- [ ] **S3 Kiro as a reviewer** — the `cross-review` skill, its version, description and README row. Turns T6–T11 green; the existing 21 stay green.
+- [x] **S2 Skills install in Kiro** — `.kiro/skills/`, the README, and the `sprints` and `ship` wording and versions. Turns T1–T5 green. Landed in `39d1554`; T1–T5 green, T6–T11 still red.
+- [x] **S3 Kiro as a reviewer** — the `cross-review` skill, its version, description and README row. Turns T6–T11 green; the existing 21 stay green. Landed in `af28de5`; T1–T11 green, all 27 evals green, and `isolated-claude` green on 3 more runs.
 
 ## Open questions
 
@@ -108,3 +108,6 @@ All resolved by Owner on 2026-11-04 in chat, as recommended:
 - **The login check is `kiro-cli whoami` succeeding, not a non-null `account` in its JSON.** Signed-in JSON has no `account` key, so the approved check would have called a signed-in user signed out. It exits 0 signed in and 1 signed out, the same as the other two reviewers' checks. Behavior is what was approved; the spec's line is corrected. Shown to Owner at approval 2.
 - **Crew needs no README line of its own.** Q2 expected one for `~/.kiro/crew/skills/`. With Crew installed, `kirocrew chat -m` did not list a skill linked there, and did list one linked into `~/.kiro/skills`, so the main install steps cover it and the README says so.
 - **Crew does have a one-shot command, `kirocrew chat -m`.** This spec said it had none. It stays out as a reviewer for a different reason: it has no flag limiting tools, and its help says the jail is a no-op on the public edition, so it can't meet the read-only rule.
+- **`cross-review` now refuses to review an empty diff.** Not in the approved scope. `isolated-claude` failed 2 of 4 runs because a blocked `git` left the diff file empty and the review ran on 0 bytes anyway. This gap predates Kiro. The skill's commands now stop on an empty diff, and it says to call a working git by its full path, since changing `PATH` did not help. No test changed.
+- **T6's two trust graders now accept a closing `)` after the tool list.** The skill's command ends in `grep_search)` inside a subshell, which they wrongly failed. An extra trusted tool still fails. Approved by Owner 2026-11-04 in chat.
+- **Hand checks done 2026-11-04.** Real `kiro-cli`, with the skill's exact command against a planted repo, found the off-by-one, with no marker file and the tree unchanged. All six skills listed from a clean checkout through `.kiro/skills`. `explain-diff` was followed with read-only tools and the diff supplied, because headless mode blocks its other tools; its own git commands in an interactive session are left to Owner.
