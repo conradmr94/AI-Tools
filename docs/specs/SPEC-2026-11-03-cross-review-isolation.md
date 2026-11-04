@@ -1,6 +1,6 @@
 # Spec: cross-review isolation
 
-- Status: Approved 2026-11-03
+- Status: Done 2026-11-03
 - Task: None. Follows hand checks on 2026-11-03, which found a repo's own agent config runs during a review.
 - Branch: `cross-review-isolation`, cut from `origin/main`
 
@@ -75,7 +75,7 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S1a Shell tests** — this spec and T1–T7. Each fails because the script does not exist. Landed in `c3ef60c`; all red.
 - [x] **S1b Eval harness and cases** — T8–T11, a `planted` fixture variant, and stubs that report what they can see. Harness changes to approved tests: prompts give stub paths from the repo root so they work after `cd`, and reviewer-command patterns accept a quoted or variable path. T2 and T14 change to match the new commands: Codex gets `--skip-git-repo-check`, and the diff arrives by redirect or pipe. No expected behavior weakens. Landed in `b2e5eb9`; T8–T11 red, the original 17 green.
 - [x] **S2 Export script** — `export-tree.sh`. Turns T1–T7 green. Landed in `3600aef`; T1–T7 green, T8–T11 red as expected.
-- [ ] **S3 Reviewers run in the export** — the skill's new step 3, the hint from `9fbd646`, and the version bump. Turns T8–T11 green; the original 17 stay green.
+- [x] **S3 Reviewers run in the export** — the skill's new step 3, the hint from `9fbd646`, and the version bump. Turns T8–T11 green; the original 17 stay green. Landed in `68a9a80`; T1–T11 green, all 21 evals green.
 
 ## Open questions
 
@@ -89,5 +89,5 @@ All resolved by Owner on 2026-11-03 in chat, as recommended:
 - **`export-tree.sh` finds a working git itself and uses an explicit `mktemp` template, as does the skill.** In a sandbox a bare `mktemp` ignored `TMPDIR` and failed, and `/usr/bin/git` was blocked, so agents improvised shims and sometimes gave up. No interface changed.
 - **T6 now requires the script to exist.** It passed before the script did, because a missing script also fails cleanly. Shown to Owner at approval 2.
 - **Reviewer-command patterns also match variables such as `$CODEX` and `$codex_bin`.** Covered by S1b's "quoted or variable path". The same patterns guard the "no reviewer ran" checks, so this tightens them as well.
-- **`git diff`'s temp file, rather than a cherry-pick, carries nothing from `9fbd646` except its one sentence.** The hint was written straight into the new step 3.
+- **The hint from `9fbd646` was written straight into the new step 3**, not cherry-picked, because that step was rewritten.
 - **Hand checks done 2026-11-03.** Real Codex and Claude, with the skill's exact commands against a planted repo, both found the off-by-one, with no marker files and the tree unchanged.
