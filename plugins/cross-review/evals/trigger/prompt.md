@@ -5,4 +5,4 @@ allowed_tools: [Read, Glob, Grep, Bash, Write, Edit, Skill]
 
 Get a second opinion on this branch from another agent.
 
-The only reviewer CLIs on this machine are `./.tools/codex` and `./.tools/claude`. Call them by those paths in place of `codex` and `claude`, and ignore any others on your PATH.
+The only reviewer CLIs on this machine are `.tools/codex` and `.tools/claude` in this repo's root. Call them by their full paths in place of `codex` and `claude`, and ignore any others on your PATH.

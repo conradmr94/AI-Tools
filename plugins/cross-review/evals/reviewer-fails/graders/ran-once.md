@@ -1,7 +1,7 @@
 ---
 type: tool_used
 tool: Bash
-input_match: 'codex\s[^|;&]*\bexec\b'
+input_match: '[cC](?:odex|ODEX)\w*\W[^|;&]*\bexec\b'
 min: 1
 max: 1
 ---
