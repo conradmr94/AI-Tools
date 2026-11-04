@@ -11,6 +11,7 @@ My personal grab bag of [Claude Code](https://claude.com/claude-code) and [Codex
 | [`spec`](plugins/spec/skills/spec/SKILL.md) | Short task specs in `docs/specs/` written before any code: goal, scope, interfaces, the tests that prove it works, and the small commits it lands in. You approve the spec, then the tests (written first and failing), and the code has to pass those tests unchanged. Keeps every change small enough to actually follow. |
 | [`explain-diff`](plugins/explain-diff/skills/explain-diff/SKILL.md) | A short guided read of a code change, in chat: what it does, the lines worth reading in order, what to skim, how it compares with its spec, and the decisions in it nobody asked for. For understanding a change without reading the whole diff cold. Writes no files. |
 | [`ship`](plugins/ship/skills/ship/SKILL.md) | Takes a finished branch to an open pull request: checks it's ready (feature branch, clean tree, spec slices ticked, tests passing), writes the PR description from the spec and commits, pushes and opens the PR. Never merges or force-pushes; if something isn't ready, it says what and stops. |
+| [`cross-review`](plugins/cross-review/skills/cross-review/SKILL.md) | Gets a change reviewed by a separate agent on your computer. You pick Claude or Codex, it runs headless and read-only, and each finding is checked against the code and reported in chat as confirmed or disputed. Fixes nothing unless you ask. Sends the code to whichever provider you pick. |
 
 More to come as I need them.
 
@@ -27,6 +28,7 @@ claude plugin install sprints@ai-tools
 claude plugin install spec@ai-tools
 claude plugin install explain-diff@ai-tools
 claude plugin install ship@ai-tools
+claude plugin install cross-review@ai-tools
 ```
 
 **Codex**
@@ -38,6 +40,7 @@ codex plugin add sprints@ai-tools
 codex plugin add spec@ai-tools
 codex plugin add explain-diff@ai-tools
 codex plugin add ship@ai-tools
+codex plugin add cross-review@ai-tools
 ```
 
 (Repo's currently private — ping me for access.)

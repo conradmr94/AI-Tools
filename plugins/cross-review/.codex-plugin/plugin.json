@@ -1,0 +1,18 @@
+{
+  "name": "cross-review",
+  "version": "1.0.0",
+  "description": "Gets a code change reviewed by a separate agent on this computer: you pick Claude or Codex, it runs read-only, and each finding is checked against the code and reported as confirmed or disputed.",
+  "author": {
+    "name": "matt"
+  },
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Cross-review",
+    "shortDescription": "Have another agent review a change",
+    "developerName": "matt",
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Cross-review this branch"
+    ]
+  }
+}
