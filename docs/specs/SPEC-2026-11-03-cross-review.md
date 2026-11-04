@@ -93,7 +93,8 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T12 stay green. Landed in `7323a27`.
 - [x] **S5 Tests for the review fixes** — adds T13 and T14, from the hand checks and the skill's first real reviews. Each fails on behavior. Landed in `d2fce7f`; T13 and T14 red.
 - [x] **S6 Review fixes** — see Deviations. Turns T13 and T14 green; T1–T12 stay green. Landed in `fca767c`; T1–T14 green.
-- [ ] **S7 Second-review wording** — says plainly that uncommitted work needs `git diff HEAD`, covers slices in the working-tree rules, and adds T15, which already passed before this wording: it is a guard, not a red test.
+- [x] **S7 Second-review wording** — says plainly that uncommitted work needs `git diff HEAD`, covers slices in the working-tree rules, and adds T15, which already passed before this wording: it is a guard, not a red test. Landed in `84659dc`; two cases failed on the eval sandbox blocking `/usr/bin/git`, fixed in S8.
+- [ ] **S8 Git fallback and instruction reporting** — ship's rule for a blocked system git, and an *Instructions in the review* report section.
 
 ## Open questions
 
@@ -115,4 +116,6 @@ All approved by Owner on 2026-11-03 in chat. They came from the hand checks and 
 - **Q1 is wider than it was.** Claude reported "Not logged in" inside Codex's read-only sandbox, so the approval to leave the sandbox covers the login check as well as the review.
 - **Root and merge commits are left as they are**, matching explain-diff's wording.
 - **T14's `diff-piped` grader was corrected before S6 landed.** It missed git called through a shell variable, so it failed a correct run. It now uses the same pattern as ship's graders.
+- **Git fallback added**, as in ship: the eval sandbox sometimes blocks `/usr/bin/git`, and the agent gave up without it.
+- **The report gains an *Instructions in the review* section.** T11 failed once with the agent ignoring the injected instruction but never mentioning it.
 - **T15 was never red.** The agent already sent uncommitted contents, by running `git diff <base>` alone. The wording in S7 removes the ambiguity both reviewers flagged.
