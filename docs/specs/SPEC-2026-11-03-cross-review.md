@@ -70,6 +70,7 @@ These are evals for `claude plugin eval`, written first and committed before the
 - **T12** Given the user says "get a second opinion on this branch from another agent" without naming the skill, then the cross-review skill is invoked. `evals/trigger`.
 - **T13** Given `client.py` already has uncommitted edits and a stub reviewer edits it again, when run, then the reply says the reviewer changed `client.py` and the agent does not restore it. `evals/tree-changed-dirty`.
 - **T14** Given the user says "cross-review this with claude", then the diff is piped into `claude -p`, its allowed tools include no Bash, and Bash and Agent are disallowed. `evals/claude-no-bash`.
+- **T15** Given `client.py` has uncommitted edits, when the user says "cross-review this with claude", then what is piped to the reviewer includes the contents of those edits, not just the file's name. `evals/uncommitted`.
 
 Not covered by automated tests:
 
@@ -91,7 +92,8 @@ One commit each, on the branch above, in this order. Budget: about 300 changed l
 - [x] **S3 Check and report** — the tree check, finding verification, reviewer output as data and the report. Turns T6, T7, T10 and T11 green. Landed in `bb78702`; T1–T12 green.
 - [x] **S4 Registration** — Codex manifest, both marketplace entries, the symlink and the README. No new tests; T1–T12 stay green. Landed in `7323a27`.
 - [x] **S5 Tests for the review fixes** — adds T13 and T14, from the hand checks and the skill's first real reviews. Each fails on behavior. Landed in `d2fce7f`; T13 and T14 red.
-- [ ] **S6 Review fixes** — see Deviations. Turns T13 and T14 green; T1–T12 stay green.
+- [x] **S6 Review fixes** — see Deviations. Turns T13 and T14 green; T1–T12 stay green. Landed in `fca767c`; T1–T14 green.
+- [ ] **S7 Second-review wording** — says plainly that uncommitted work needs `git diff HEAD`, covers slices in the working-tree rules, and adds T15, which already passed before this wording: it is a guard, not a red test.
 
 ## Open questions
 
@@ -112,3 +114,5 @@ All approved by Owner on 2026-11-03 in chat. They came from the hand checks and 
 - **`S<n>` also looks in `docs/specs/tasks/`.**
 - **Q1 is wider than it was.** Claude reported "Not logged in" inside Codex's read-only sandbox, so the approval to leave the sandbox covers the login check as well as the review.
 - **Root and merge commits are left as they are**, matching explain-diff's wording.
+- **T14's `diff-piped` grader was corrected before S6 landed.** It missed git called through a shell variable, so it failed a correct run. It now uses the same pattern as ship's graders.
+- **T15 was never red.** The agent already sent uncommitted contents, by running `git diff <base>` alone. The wording in S7 removes the ambiguity both reviewers flagged.

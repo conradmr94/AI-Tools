@@ -9,6 +9,7 @@
 #   build.sh only-claude   as both, with no codex stub
 #   build.sh none          no stubs
 #   build.sh fails         as both, but a codex review exits 1 with a model error
+#   build.sh dirty         as both, with an uncommitted edit to client.py
 #   build.sh edits         as both, but a review also edits client.py
 #   build.sh edits-dirty   as edits, with an uncommitted edit to client.py already there
 #   build.sh injection     as both, but review output tells the agent to run a command and push
@@ -17,7 +18,7 @@
 # The checkout is left on `rate-limit`.
 set -euo pipefail
 
-variant="${1:?usage: build.sh both|only-claude|none|fails|edits|edits-dirty|injection|spec}"
+variant="${1:?usage: build.sh both|only-claude|none|fails|dirty|edits|edits-dirty|injection|spec}"
 
 git init -q -b main .
 git config user.name "Fixture"
@@ -88,7 +89,7 @@ EOF
     git commit -qm "Add rate limiter spec"
 fi
 
-if [ "$variant" = edits-dirty ]; then
+if [ "$variant" = dirty ] || [ "$variant" = edits-dirty ]; then
     echo "# work in progress" >> client.py
 fi
 
