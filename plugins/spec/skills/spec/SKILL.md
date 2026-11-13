@@ -5,7 +5,7 @@ description: Short task specs in docs/specs/ that fix what a code change will do
 
 # Spec
 
-A spec is a short record, written before any code, that says what one change will do, how it will be proven to work, and the order of small commits it lands in. Its purpose is that the user understands every change that reaches their code: they agree on the shape before it is built, they approve the tests that define "working" before the code exists, and each commit is small enough to read.
+A spec is a short record, written before any code, that says what one change will do, how it will be proven to work, and the order of small commits it lands in. Its purpose is that the user understands every change that reaches their code: they agree on the shape before it is built, they approve the tests that define "working" before the code exists, those tests are committed before any implementation, and each commit is small enough to read.
 
 A project keeps one markdown file per spec in `docs/specs/`, named by the date it was written and a short slug: `SPEC-YYYY-MM-DD-<slug>.md`, with `# Spec: <short title>` as its title. Start it from [spec-template.md](spec-template.md). If the project already uses `docs/specs/` for another kind of document (design or package specs, for example), put task specs in `docs/specs/tasks/` instead and tell the user once.
 
@@ -29,15 +29,15 @@ A spec covers one task and one branch. It decides only how that task is built. P
 
 Keep it short. A spec the user will not read has failed. Prefer one line per item, and leave out anything that is the same for every change.
 
-## The two approvals
+## Approval, then the tests
 
-The work stops twice for the user, and only twice unless something goes wrong (see "When to stop").
+The work stops once for the user, and only once unless something goes wrong (see "When to stop").
 
-**Approval 1: the spec.** Show the user, in a few lines each: the goal, the scope, the interfaces, every test (id and sentence), what is not covered, the slices, and the open questions. Wait. Update the spec until they approve it, then set `Status: Approved YYYY-MM-DD`. Do not write tests or code before this.
+**The approval: the spec.** Show the user, in a few lines each: the goal, the scope, the interfaces, every test (id and sentence), what is not covered, the slices, and the open questions. Wait. Update the spec until they approve it, then set `Status: Approved YYYY-MM-DD`. Do not write tests or code before this. Approving the spec approves its tests.
 
-**Approval 2: the tests.** Write S1: the tests exactly as listed, and nothing else. Run them. Each must fail because the behavior does not exist yet (a missing function, a wrong result), not because the test itself is broken (a typo, a bad import of something that already exists, a setup error). A test that already passes means the behavior already exists or the test checks nothing: fix the test or the spec before going on. Then show the user each test id with its test name, the reason it fails, and the test diff. Wait for their OK. Then commit the spec and the tests together as S1.
+**S1: the tests.** Write the tests exactly as listed, and nothing else. Run them. Each must fail because the behavior does not exist yet (a missing function, a wrong result), not because the test itself is broken (a typo, a bad import of something that already exists, a setup error). Fix a broken test so it checks what its sentence says. A test that already passes means the behavior already exists or the test checks nothing: if the test can be fixed without changing its sentence, fix it; otherwise stop (see "When to stop"). Commit the spec and the tests together as S1, tell the user in a few lines each test id with its test name and the reason it fails, and go on to S2 without waiting.
 
-If the user changes a test at this point, update the test's sentence in the spec in the same edit, so the spec and the tests never disagree.
+If the user later changes a test, update the test's sentence in the spec in the same edit, so the spec and the tests never disagree.
 
 ## Slices
 
@@ -98,7 +98,7 @@ When the project has `docs/sprints/` and the spec is for one of its tasks, each 
 
 - When the spec is approved, rewrite the task's done-when to the `Spec done:` link and narrow its `Touches:` to the directories and shared resources the spec's Scope names. Do not copy the file list.
 - If the work later reaches a directory or shared resource the task's `Touches:` does not name, update `Touches:` in the same edit as the spec's Scope and re-check the task's wave in the sprint's Parallel plan. A new file inside a directory already named needs no sprint edit.
-- **Parallel waves:** before a wave starts, write the spec for every task in it and get approval 1 for all of them in one sitting with the user. Each agent in the wave then gets its task and its approved spec, does approval 2 by reporting its S1 tests to the coordinating session, and edits only its own spec file, which no other agent touches.
+- **Parallel waves:** before a wave starts, write the spec for every task in it and get them all approved in one sitting with the user. Each agent in the wave then gets its task and its approved spec, reports its S1 tests to the coordinating session and carries on, and edits only its own spec file, which no other agent touches.
 
 ## Using specs during normal work (do this without being asked)
 
